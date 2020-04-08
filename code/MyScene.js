@@ -15,13 +15,13 @@ class MyScene extends THREE.Scene {
     this.axis = new THREE.AxesHelper(10);
     this.add(this.axis);
 
-    this.recorridos = new RollerCoaster();
-    this.add(this.recorridos);
+    this.RollerCoaster = new RollerCoaster();
+    this.add(this.RollerCoaster);
   }
 
   createCamera() {
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    this.camera.position.set(2, 10, 25);
+    this.camera.position.set(30, 70, 60);
     var look = new THREE.Vector3(0, 0, 0);
     this.camera.lookAt(look);
     this.add(this.camera);
@@ -83,7 +83,7 @@ class MyScene extends THREE.Scene {
     this.axis.visible = this.guiControls.axisOnOff;
     this.cameraControl.update();
     if (this.guiControls.animate) {
-      this.recorridos.update();
+      this.RollerCoaster.update();
     }
     this.renderer.render(this, this.getCamera());
   }
