@@ -40,8 +40,10 @@ class RollerCoaster extends THREE.Object3D {
     // TubeGeometry(path : Curve, tubularSegments : Integer, radius : Float, radialSegments : Integer, closed : Boolean)
     var geometry = new THREE.TubeGeometry(this.curve, 512, 0.5, 12, true);
     // Definir aquí el material de las guías
-    var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+    var textureGuide = new THREE.TextureLoader().load( 'imgs/tubo1.jpg');
+    var material = new THREE.MeshBasicMaterial( { map: textureGuide });
     var mesh = new THREE.Mesh( geometry, material );
+    
     guide.add(mesh);
     return guide;
   }
