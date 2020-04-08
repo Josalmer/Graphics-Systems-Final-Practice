@@ -17,6 +17,9 @@ class MyScene extends THREE.Scene {
 
     this.RollerCoaster = new RollerCoaster();
     this.add(this.RollerCoaster);
+
+    this.sky = new Environment();
+    this.add(this.sky);
   }
 
   createCamera() {
@@ -82,6 +85,7 @@ class MyScene extends THREE.Scene {
   update() {
     requestAnimationFrame(() => this.update())
     this.spotLight.intensity = this.guiControls.lightIntensity;
+    this.sky.update();
     this.axis.visible = this.guiControls.axisOnOff;
     this.cameraControl.update();
     if (this.guiControls.animate) {
