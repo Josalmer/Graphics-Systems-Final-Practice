@@ -38,7 +38,7 @@ class RollerCoaster extends THREE.Object3D {
       new THREE.Vector3( -7, 7, 12 ), new THREE.Vector3( 0, 10, 10 )
     ] );
     // TubeGeometry(path : Curve, tubularSegments : Integer, radius : Float, radialSegments : Integer, closed : Boolean)
-    var geometry = new THREE.TubeGeometry(this.curve, 512, 0.5, 12, true);
+    var geometry = new THREE.TubeGeometry(this.curve, 512, 0.7, 12, true);
     // Definir aquí el material de las guías
     var textureGuide = new THREE.TextureLoader().load( 'imgs/tubo1.jpg');
     var material = new THREE.MeshBasicMaterial( { map: textureGuide });
@@ -64,7 +64,7 @@ class RollerCoaster extends THREE.Object3D {
         function ( object ) {
           wagon.add( object );
           object.scale.set(0.5, 0.5, 0.5);
-          object.position.y = 0.9;
+          object.position.y = 1.1;
           object.rotation.y = - Math.PI;
 
         },
@@ -85,11 +85,11 @@ class RollerCoaster extends THREE.Object3D {
     // aspect — Camera frustum aspect ratio.
     // near — Camera frustum near plane.
     // far — Camera frustum far plane.
-    this.splineCamera = new THREE.PerspectiveCamera( 52, window.innerWidth / window.innerHeight, 0.01, 1000 );
-    this.splineCamera.position.y = 1.60;
-    this.splineCamera.position.z = 0.5;
+    this.splineCamera = new THREE.PerspectiveCamera( 86, window.innerWidth / window.innerHeight, 0.01, 1000 );
+    this.splineCamera.position.y = 1.75;
+    this.splineCamera.position.z = 0.7;
     this.splineCamera.rotation.y = - Math.PI;
-    this.splineCamera.rotation.x =  Math.PI / 9;
+    this.splineCamera.rotation.x = Math.PI / 18;
     wagon.add( this.splineCamera );
 
     return wagon;
