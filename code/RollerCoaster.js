@@ -2,6 +2,14 @@ class RollerCoaster extends THREE.Object3D {
   constructor() {
     super();
 
+    this.initialTime = 45 * 1000;   // 45 segundos una vuelta
+    this.minimumTime = 15 * 1000;   // 20 segundos una vuelta
+    this.deltaTime = 10 * 1000;      // 10 segundos se recorta cada vuelta
+    this.currentTime = this.initialTime + this.deltaTime;
+    this.lapNumber = 0;
+    this.t_prev = 99;
+    this.timeNewLap = Date.now();
+
     this.guide = this.createCurve();
     this.add(this.guide);
 
@@ -84,9 +92,23 @@ class RollerCoaster extends THREE.Object3D {
     // Representa posición en el spline
     // 0 principio
     // 1 final
-    var timeActual = Date.now();
-    var looptime = 45000;
+    var timeActual = Date.now() - this.timeNewLap;
+    var looptime = this.currentTime;
     var t = (timeActual % looptime) / looptime;
+
+    if (this.t_prev > t) {
+      // nueva vuelta     
+      this.lapNumber += 1;
+
+      if (this.currentTime - this.deltaTime >= this.minimumTime) {
+        this.currentTime -= this.deltaTime;
+      } else {
+        this.currentTime = this.minimumTime;
+      }
+      this.timeNewLap = Date.now();
+      t = 0;
+    }
+    this.t_prev = t;
     // obtener punto p donde esta el objeto
     var p = this.curve.getPointAt(t);
     // obtenemos tangente a la curva en p
