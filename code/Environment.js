@@ -27,7 +27,6 @@ class Environment extends THREE.Object3D {
     
   }
 
-
   update () {
 
   }

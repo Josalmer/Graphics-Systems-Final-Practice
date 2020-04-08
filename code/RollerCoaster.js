@@ -15,6 +15,13 @@ class RollerCoaster extends THREE.Object3D {
 
     this.wagon = this.createWagon();
     this.add(this.wagon);
+
+    var p = this.curve.getPointAt(0);
+    // obtenemos tangente a la curva en p
+    var tangente = this.curve.getTangentAt(0);
+    this.wagon.position.copy(p);
+    p.add(tangente);
+    this.wagon.lookAt(p); // ponemos al objeto mirando hacia la tangente
   }
 
   createCurve() {
@@ -43,19 +50,19 @@ class RollerCoaster extends THREE.Object3D {
     var wagon = new THREE.Object3D();
     // instantiate a loader
     var mtLoader = new THREE.MTLLoader();
-    mtLoader.load('./models/car/911.mtl', function (materials) {
+    mtLoader.load('./models/aircraft/Aircraft_obj.mtl', function (materials) {
       materials.preload();
       var objLoader = new THREE.OBJLoader();
       objLoader.setMaterials(materials);
       // load a resource
       objLoader.load(
         // resource URL
-        './models/car/Porsche_911_GT2.obj',
+        './models/aircraft/Aircraft_obj.obj',
         // called when resource is loaded
         function ( object ) {
           wagon.add( object );
           object.scale.set(0.5, 0.5, 0.5);
-          object.position.y = 0.7;
+          object.position.y = 0.9;
           object.rotation.y = - Math.PI;
 
         },
@@ -76,13 +83,12 @@ class RollerCoaster extends THREE.Object3D {
     // aspect — Camera frustum aspect ratio.
     // near — Camera frustum near plane.
     // far — Camera frustum far plane.
-    this.splineCamera = new THREE.PerspectiveCamera( 64, window.innerWidth / window.innerHeight, 0.01, 1000 );
-    this.splineCamera.position.y = 1;
-    this.splineCamera.position.z = 0.15;
+    this.splineCamera = new THREE.PerspectiveCamera( 52, window.innerWidth / window.innerHeight, 0.01, 1000 );
+    this.splineCamera.position.y = 1.60;
+    this.splineCamera.position.z = 0.5;
     this.splineCamera.rotation.y = - Math.PI;
     this.splineCamera.rotation.x =  Math.PI / 9;
     wagon.add( this.splineCamera );
-
 
     return wagon;
   }
