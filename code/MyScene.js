@@ -38,11 +38,13 @@ class MyScene extends THREE.Scene {
       this.lightIntensity = 0.5;
       this.axisOnOff = true;
       this.animate = false;
+      this.wagonCamera = false;
     }
     var folder = gui.addFolder('Luz y Ejes');
     folder.add(this.guiControls, 'lightIntensity', 0, 1, 0.1).name('Intensidad de la Luz : ');
     folder.add(this.guiControls, 'axisOnOff').name('Mostrar ejes : ');
     folder.add(this.guiControls, 'animate').name('Animation : ');
+    folder.add(this.guiControls, 'wagonCamera').name('Wagon view : ');
 
     return gui;
   }
@@ -64,7 +66,7 @@ class MyScene extends THREE.Scene {
   }
 
   getCamera() {
-    return this.camera;
+    return this.guiControls.wagonCamera ? this.RollerCoaster.splineCamera : this.camera;
   }
 
   setCameraAspect(ratio) {
