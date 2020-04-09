@@ -1,8 +1,8 @@
-class crazyWagonGame extends THREE.Object3D {
+class CrazyWagonGame extends THREE.Object3D {
   constructor() {
     super();
 
-    this.gameData = this.initGame();
+    this.gameData = this.initData();
 
     this.spline = this.createSpline();
 
@@ -20,12 +20,14 @@ class crazyWagonGame extends THREE.Object3D {
     this.wagon.lookAt(p); // ponemos al objeto mirando hacia la tangente
   }
 
-  initGame() {
+  initData() {
+    var _initialTime = 45 * 1000; // 45 segundos una vuelta
+    var _deltaTime = 10 *1000;    // 10 segundos se recorta cada vuelta
     var gameData = {
-      initialTime: 45 * 1000,   // 45 segundos una vuelta
-      minimumTime: 15 * 1000,   // 20 segundos una vuelta
-      deltaTime: 10 * 1000,      // 10 segundos se recorta cada vuelta
-      currentTime: 55 * 1000,
+      initialTime: _initialTime,
+      minimumTime: 15 * 1000,     // 20 segundos una vuelta
+      deltaTime: _deltaTime,
+      currentTime: _initialTime + _deltaTime,
       lapNumber: 0,
       t_prev: 99,
       timeNewLap: Date.now()
@@ -48,15 +50,7 @@ class crazyWagonGame extends THREE.Object3D {
     return spline;
   }
 
-  update() {
-    // parametro t entre 0 y 1
-    // Representa posición en el spline
-    // 0 principio
-    // 1 final
-    var timeActual = Date.now() - this.gameData.timeNewLap;
-    var looptime = this.gameData.currentTime;
-    var t = (timeActual % looptime) / looptime;
-
+  checkNewLap(t) {
     if (this.gameData.t_prev > t) {
       // nueva vuelta     
       this.gameData.lapNumber += 1;
@@ -70,6 +64,19 @@ class crazyWagonGame extends THREE.Object3D {
       t = 0;
     }
     this.gameData.t_prev = t;
+    return t;
+  }
+
+  update() {
+    // parametro t entre 0 y 1
+    // Representa posición en el spline
+    // 0 principio
+    // 1 final
+    var timeActual = Date.now() - this.gameData.timeNewLap;
+    var looptime = this.gameData.currentTime;
+    var t = (timeActual % looptime) / looptime;
+    t = this.checkNewLap(t);
+  
     // obtener punto p donde esta el objeto
     var p = this.spline.getPointAt(t);
     // obtenemos tangente a la curva en p

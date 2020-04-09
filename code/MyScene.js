@@ -4,6 +4,7 @@ class MyScene extends THREE.Scene {
   constructor(myCanvas) {
     super();
 
+    this.menu_activo = true; 
     this.renderer = this.createRenderer(myCanvas);
 
     this.gui = this.createGUI();
@@ -15,7 +16,7 @@ class MyScene extends THREE.Scene {
     this.axis = new THREE.AxesHelper(10);
     this.add(this.axis);
 
-    this.game = new crazyWagonGame();
+    this.game = new CrazyWagonGame();
     this.add(this.game);
 
     this.sky = new Environment();
@@ -82,6 +83,30 @@ class MyScene extends THREE.Scene {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
+  //Funcion para controlar la entrada de teclado
+  setupKeyControls() {
+      document.onkeydown = function(e) {
+        switch (e.keyCode) {
+          case 37:
+          console.log('tecla derecha');
+          break;
+
+          case 39:
+          console.log('tecla izquierda');
+          break;
+          case 27:
+            if (!this.menu_activo) {
+                this.menu_activo = true;
+                document.getElementById("menu").style.display = "block";
+              } else if (active_menu) {
+                this.menu_activo = false;
+                document.getElementById("menu").style.display = "none";
+              }
+            break;
+        }
+      };
+    }
+
   update() {
     requestAnimationFrame(() => this.update())
     this.spotLight.intensity = this.guiControls.lightIntensity;
@@ -95,8 +120,23 @@ class MyScene extends THREE.Scene {
   }
 }
 
+// function start() {
+//   var scene = new MyScene("#WebGL-output");
+  
+//   window.addEventListener("resize", () => scene.onWindowResize());
+//   //Llamada a la funcion que controla las entradas del teclado
+//   window.addEventListener("keydown", () => scene.setupKeyControls());
+
+//   scene.update();
+// };
+
 $(function () {
   var scene = new MyScene("#WebGL-output");
+  // document.getElementById("menu").style.display = "block";
+  
   window.addEventListener("resize", () => scene.onWindowResize());
+  //Llamada a la funcion que controla las entradas del teclado
+  window.addEventListener("keydown", () => scene.setupKeyControls());
+
   scene.update();
 });
