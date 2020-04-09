@@ -12,12 +12,7 @@ class CrazyWagonGame extends THREE.Object3D {
     this.wagon = new Wagon();
     this.add(this.wagon);
 
-    var p = this.spline.getPointAt(0);
-    // obtenemos tangente a la curva en p
-    var tangente = this.spline.getTangentAt(0);
-    this.wagon.position.copy(p);
-    p.add(tangente);
-    this.wagon.lookAt(p); // ponemos al objeto mirando hacia la tangente
+    this.initModels();
   }
 
   initData() {
@@ -50,6 +45,26 @@ class CrazyWagonGame extends THREE.Object3D {
     return spline;
   }
 
+  initModels() {
+    var p = this.spline.getPointAt(0);
+    var tangente = this.spline.getTangentAt(0);
+    this.wagon.position.copy(p);
+    p.add(tangente);
+    this.wagon.lookAt(p); // ponemos al objeto mirando hacia la tangente
+  }
+
+  getPosition() {
+    // parametro t entre 0 y 1
+    // Representa posición en el spline
+    // 0 principio
+    // 1 final
+    var timeActual = Date.now() - this.gameData.timeNewLap;
+    var looptime = this.gameData.currentTime;
+    var t = (timeActual % looptime) / looptime;
+    t = this.checkNewLap(t);
+    return t;
+  }
+
   checkNewLap(t) {
     if (this.gameData.t_prev > t) {
       // nueva vuelta     
@@ -67,20 +82,23 @@ class CrazyWagonGame extends THREE.Object3D {
     return t;
   }
 
+  turnRight() {
+    this.wagon.wagonModel.rotation.z -= 0.04;
+    this.wagon.wagonCam.rotation.z -= 0.04;
+  }
+
+  turnLeft() {
+    this.wagon.wagonModel.rotation.z += 0.04;
+    this.wagon.wagonCam.rotation.z += 0.04;
+  }
+
   update() {
-    // parametro t entre 0 y 1
-    // Representa posición en el spline
-    // 0 principio
-    // 1 final
-    var timeActual = Date.now() - this.gameData.timeNewLap;
-    var looptime = this.gameData.currentTime;
-    var t = (timeActual % looptime) / looptime;
-    t = this.checkNewLap(t);
-  
+    var t = this.getPosition();
     // obtener punto p donde esta el objeto
     var p = this.spline.getPointAt(t);
     // obtenemos tangente a la curva en p
     var tangente = this.spline.getTangentAt(t);
+    
     this.wagon.position.copy(p);
     p.add(tangente);
     this.wagon.lookAt(p); // ponemos al objeto mirando hacia la tangente

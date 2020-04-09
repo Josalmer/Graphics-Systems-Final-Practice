@@ -42,6 +42,7 @@ class Wagon extends THREE.Object3D {
   }
 
   createWagonCam() {
+    var camera = new THREE.Object3D();
     // Camara en el wagon
     // PerspectiveCamera( fov : Number, aspect : Number, near : Number, far : Number )
     // fov — Camera frustum vertical field of view.
@@ -54,6 +55,8 @@ class Wagon extends THREE.Object3D {
     splineCamera.rotation.y = - Math.PI;
     splineCamera.rotation.x = Math.PI / 18;
 
-    return splineCamera;
+    camera.add(splineCamera)
+
+    return camera;
   }
 }

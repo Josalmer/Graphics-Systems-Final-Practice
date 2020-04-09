@@ -4,7 +4,7 @@ class MyScene extends THREE.Scene {
   constructor(myCanvas) {
     super();
 
-    this.menu_activo = true; 
+    this.menu_activo = true;
     this.renderer = this.createRenderer(myCanvas);
 
     this.gui = this.createGUI();
@@ -70,7 +70,7 @@ class MyScene extends THREE.Scene {
   }
 
   getCamera() {
-    return this.guiControls.wagonCamera ? this.game.wagon.wagonCam : this.camera;
+    return this.guiControls.wagonCamera ? this.game.wagon.wagonCam.children[0] : this.camera;
   }
 
   setCameraAspect(ratio) {
@@ -85,27 +85,28 @@ class MyScene extends THREE.Scene {
 
   //Funcion para controlar la entrada de teclado
   setupKeyControls() {
-      document.onkeydown = function(e) {
-        switch (e.keyCode) {
-          case 37:
-          console.log('tecla derecha');
+    var that = this;
+    document.onkeydown = function (e) {
+      switch (e.keyCode) {
+        case 37:
+          that.game.turnRight();
           break;
 
-          case 39:
-          console.log('tecla izquierda');
+        case 39:
+          that.game.turnLeft();
           break;
-          case 27:
-            if (!this.menu_activo) {
-                this.menu_activo = true;
-                document.getElementById("menu").style.display = "block";
-              } else if (active_menu) {
-                this.menu_activo = false;
-                document.getElementById("menu").style.display = "none";
-              }
-            break;
-        }
-      };
-    }
+        case 27:
+          if (!this.menu_activo) {
+            this.menu_activo = true;
+            document.getElementById("menu").style.display = "block";
+          } else if (active_menu) {
+            this.menu_activo = false;
+            document.getElementById("menu").style.display = "none";
+          }
+          break;
+      }
+    };
+  }
 
   update() {
     requestAnimationFrame(() => this.update())
@@ -122,7 +123,7 @@ class MyScene extends THREE.Scene {
 
 // function start() {
 //   var scene = new MyScene("#WebGL-output");
-  
+
 //   window.addEventListener("resize", () => scene.onWindowResize());
 //   //Llamada a la funcion que controla las entradas del teclado
 //   window.addEventListener("keydown", () => scene.setupKeyControls());
@@ -133,7 +134,7 @@ class MyScene extends THREE.Scene {
 $(function () {
   var scene = new MyScene("#WebGL-output");
   // document.getElementById("menu").style.display = "block";
-  
+
   window.addEventListener("resize", () => scene.onWindowResize());
   //Llamada a la funcion que controla las entradas del teclado
   window.addEventListener("keydown", () => scene.setupKeyControls());
