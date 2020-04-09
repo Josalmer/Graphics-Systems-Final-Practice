@@ -22,10 +22,12 @@
         $(document).ready(function() {
             setTimeout(function() {
                 $("#lyr_loading").fadeOut(500);
+                
             },1000); //tiempo de carga modificar este
-     
+
             setTimeout(function() {
                 $("#WebGL-output").fadeIn(500);
+                $("#menuInicio").fadeIn(500);
             },3000);
         });
     </script>
@@ -44,10 +46,18 @@
   Comenzar el juego
 </button> -->
 
+<div id="Laps"> </div>
+
+<div id="cronometro">
+    <div class="reloj" id="Minutos"></div>
+    <div class="reloj" id="Segundos">:</div>
+    <div class="reloj" id="Centesimas">:</div>
+</div>
+
 
 
 <!-- --------------- MENU PRINCIPAL DEL JUEGO ---------------- -->
-<div id="menu">
+<div id="menuInicio">
     <h1>Menu Principal</h1>
     <h2> - Controles - </h2>
     <h3>
@@ -58,6 +68,17 @@
     </h3>
 
     <h2> - PULSA ESPACIO PARA EMPEZAR -</h2>
+    <!-- <div class="button" id="cerrar">Cerrar</div> -->
+</div>
+
+<div id="menuAyuda">
+    <h1> - Controles - </h1>
+    <h2>
+        <li>Abrir/Cerrar Ayuda - "H"</li>
+        <li>Izquierda - "A / LEFT ARROW"</li>
+        <li>Derecha - "D / RIGTH ARROW"</li>
+        
+    </h2>
     <!-- <div class="button" id="cerrar">Cerrar</div> -->
 </div>
 

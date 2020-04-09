@@ -45,7 +45,22 @@
     height: 300px;
 }
 
-#menu {
+#menuInicio {
+    position: absolute;
+    text-align: center;
+    height: 350px;
+    margin-top: 200px;
+    background-color: rgba(44, 44, 44, 0.741);
+    border-radius: 5px;
+    margin-left: 25%;
+    width: 50%;
+    display: block;
+    text-align: center;
+    color: white;
+    box-shadow: black 1px 1px 5px;
+}
+
+#menuAyuda {
     position: absolute;
     text-align: center;
     height: 350px;
@@ -58,5 +73,30 @@
     text-align: center;
     color: white;
     box-shadow: black 1px 1px 5px;
+}
+
+#Laps
+{
+    position : absolute ; 
+    left :550px; 
+    top:20px;
+    color: yellow;
+    /*background-color: rgba(14, 155, 220, 0.741);*/
+}
+
+#cronometro{
+    margin: 10px auto;
+    width: 540px;
+    height: 115px;
+    z-index: 10000;
+    position: fixed;
+    left: 40%;
+    color: yellow;
+}
+.reloj{
+    float: left;
+    font-size: 80px;
+    font-family: Arial,sans-serif;
+    z-index: 10000;
 }
 
