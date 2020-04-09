@@ -119,11 +119,11 @@ class MyScene extends THREE.Scene {
 
   updateCrono() {
     var ahora = new Date();
-    var crono = newDate(ahora - this.inicio);
-    document.getElementById ("Laps").innerHTML = "<h2>Vuelta Nº: "+this.gameData.lapNumber+"</h2>";
+    var crono = new Date(ahora - this.inicio);
+    document.getElementById ("Laps").innerHTML = "<h2>Vuelta Nº: "+this.game.gameData.lapNumber+"</h2>";
     this.minutos = crono.getMinutes();
     this.seconds = crono.getSeconds();
-    this.miliseconds = crono.getMiliseconds();
+    this.miliseconds = crono.getMilliseconds();
   }
 
   update() {
