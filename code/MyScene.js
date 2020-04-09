@@ -47,8 +47,8 @@ class MyScene extends THREE.Scene {
     var folder = gui.addFolder('Luz y Ejes');
     folder.add(this.guiControls, 'lightIntensity', 0, 1, 0.1).name('Intensidad de la Luz : ');
     folder.add(this.guiControls, 'axisOnOff').name('Mostrar ejes : ');
-    folder.add(this.guiControls, 'animate').name('Animation : ');
-    folder.add(this.guiControls, 'wagonCamera').name('Wagon view : ');
+    folder.add(this.guiControls, 'animate').name('Animation : ').listen();
+    folder.add(this.guiControls, 'wagonCamera').name('Wagon view : ').listen();
 
     return gui;
   }

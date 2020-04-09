@@ -12,6 +12,9 @@ class CrazyWagonGame extends THREE.Object3D {
     this.wagon = new Wagon();
     this.add(this.wagon);
 
+    this.obstacles = this.loadObstacles()
+    this.add(this.obstacles);
+
     this.initModels();
   }
 
@@ -45,12 +48,34 @@ class CrazyWagonGame extends THREE.Object3D {
     return spline;
   }
 
+  loadObstacles() {
+    var obstacles = new THREE.Group();;
+
+    for (let i = 0; i < 60; i++) {
+      let obstacle = new Obstacle(i);
+      obstacles.add(obstacle);
+    }
+    return obstacles;
+  }
+
   initModels() {
-    var p = this.spline.getPointAt(0);
-    var tangente = this.spline.getTangentAt(0);
-    this.wagon.position.copy(p);
+    this.placeObject(this.wagon, 0);// posicionar wagon
+
+    // posicionar obstaculos
+    for (let i = 0; i < this.obstacles.children.length; i++) {
+      this.placeObject(this.obstacles.children[i], i / this.obstacles.children.length, i * (Math.PI / 4));
+    }
+  }
+
+  placeObject(obj, t, rotation = 0) {
+    var p = this.spline.getPointAt(t);
+    var tangente = this.spline.getTangentAt(t);
+    obj.position.copy(p);
     p.add(tangente);
-    this.wagon.lookAt(p); // ponemos al objeto mirando hacia la tangente
+    obj.lookAt(p); // ponemos al objeto mirando hacia la tangente
+    if (rotation != 0) {
+      obj.model.rotation.z = rotation;
+    }
   }
 
   getPosition() {
