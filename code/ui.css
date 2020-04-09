@@ -55,7 +55,7 @@
     border-radius: 5px;
     margin-left: 25%;
     width: 50%;
-    display: none;
+    display: block;
     text-align: center;
     color: white;
     box-shadow: black 1px 1px 5px;
