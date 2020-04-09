@@ -15,8 +15,8 @@ class MyScene extends THREE.Scene {
     this.axis = new THREE.AxesHelper(10);
     this.add(this.axis);
 
-    this.RollerCoaster = new RollerCoaster();
-    this.add(this.RollerCoaster);
+    this.game = new crazyWagonGame();
+    this.add(this.game);
 
     this.sky = new Environment();
     this.add(this.sky);
@@ -69,7 +69,7 @@ class MyScene extends THREE.Scene {
   }
 
   getCamera() {
-    return this.guiControls.wagonCamera ? this.RollerCoaster.splineCamera : this.camera;
+    return this.guiControls.wagonCamera ? this.game.wagon.wagonCam : this.camera;
   }
 
   setCameraAspect(ratio) {
@@ -89,7 +89,7 @@ class MyScene extends THREE.Scene {
     this.axis.visible = this.guiControls.axisOnOff;
     this.cameraControl.update();
     if (this.guiControls.animate) {
-      this.RollerCoaster.update();
+      this.game.update();
     }
     this.renderer.render(this, this.getCamera());
   }
