@@ -88,21 +88,28 @@ class MyScene extends THREE.Scene {
     var that = this;
     document.onkeydown = function (e) {
       switch (e.keyCode) {
-        case 37:
+        case 37: // Tecla derecha
           that.game.turnRight();
           break;
-
-        case 39:
+        case 39: // Tecla izquierda
           that.game.turnLeft();
           break;
-        case 27:
-          if (!this.menu_activo) {
-            this.menu_activo = true;
+        case 72: //Tecla H - Help
+          if (!that.menu_activo) {
+            that.menu_activo = true;
             document.getElementById("menu").style.display = "block";
           } else if (active_menu) {
-            this.menu_activo = false;
+            that.menu_activo = false;
             document.getElementById("menu").style.display = "none";
           }
+          break;
+        case 32: //espacio
+          that.menu_activo = false;
+          document.getElementById("menu").style.display = "none";
+
+          that.guiControls.animate = true;
+          that.guiControls.wagonCamera = true;
+
           break;
       }
     };
@@ -134,6 +141,7 @@ class MyScene extends THREE.Scene {
 $(function () {
   var scene = new MyScene("#WebGL-output");
   // document.getElementById("menu").style.display = "block";
+  //document.getElementById("menu").style.display = "none";
 
   window.addEventListener("resize", () => scene.onWindowResize());
   //Llamada a la funcion que controla las entradas del teclado
