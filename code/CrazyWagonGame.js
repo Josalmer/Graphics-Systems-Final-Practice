@@ -94,6 +94,7 @@ class CrazyWagonGame extends THREE.Object3D {
     if (this.gameData.t_prev > t) {
       // nueva vuelta     
       this.gameData.lapNumber += 1;
+      document.getElementById ("Laps").innerHTML = "<h2>Vuelta Nº: "+this.gameData.lapNumber+"</h2>";
 
       if (this.gameData.currentTime - this.gameData.deltaTime >= this.gameData.minimumTime) {
         this.gameData.currentTime -= this.gameData.deltaTime;

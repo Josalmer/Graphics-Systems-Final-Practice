@@ -4,7 +4,7 @@ class MyScene extends THREE.Scene {
   constructor(myCanvas) {
     super();
 
-    this.menu_activo = true;
+    this.menu_active = true;
     this.renderer = this.createRenderer(myCanvas);
 
     this.gui = this.createGUI();
@@ -95,17 +95,19 @@ class MyScene extends THREE.Scene {
           that.game.turnLeft();
           break;
         case 72: //Tecla H - Help
-          if (!that.menu_activo) {
-            that.menu_activo = true;
-            document.getElementById("menu").style.display = "block";
-          } else if (active_menu) {
-            that.menu_activo = false;
-            document.getElementById("menu").style.display = "none";
+          if (!that.menu_active) {
+            document.getElementById("menuAyuda").style.display = "block";
+            that.menu_active = true;
+          } else if (that.menu_active) {
+            that.menu_active = false;
+            document.getElementById("menuAyuda").style.display = "none";
           }
           break;
         case 32: //espacio
-          that.menu_activo = false;
-          document.getElementById("menu").style.display = "none";
+          document.getElementById("menuInicio").style.display = "none";
+          that.menu_active = false;
+          // al iniciar, darle a espacio
+          that.inicio = new Date();
 
           that.guiControls.animate = true;
           that.guiControls.wagonCamera = true;
@@ -115,11 +117,20 @@ class MyScene extends THREE.Scene {
     };
   }
 
+  updateCrono() {
+    var ahora = new Date();
+    var crono = newDate(ahora - this.inicio);
+    document.getElementById ("Laps").innerHTML = "<h2>Vuelta Nº: "+this.gameData.lapNumber+"</h2>";
+    this.minutos = crono.getMinutes();
+    this.seconds = crono.getSeconds();
+    this.miliseconds = crono.getMiliseconds();
+  }
+
   update() {
     requestAnimationFrame(() => this.update())
     this.spotLight.intensity = this.guiControls.lightIntensity;
-    this.sky.update();
     this.axis.visible = this.guiControls.axisOnOff;
+    this.updateCrono();
     this.cameraControl.update();
     if (this.guiControls.animate) {
       this.game.update();
