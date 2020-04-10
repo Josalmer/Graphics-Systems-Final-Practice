@@ -29,14 +29,6 @@ class Wagon extends THREE.Object3D {
           object.scale.set(0.5, 0.5, 0.5);
           object.position.y = 1.1;
           object.rotation.y = - Math.PI;
-        },
-        // called when loading is in progresses
-        function (xhr) {
-          console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-        },
-        // called when loading has errors
-        function (error) {
-          console.log('An error happened');
         }
       );
     });

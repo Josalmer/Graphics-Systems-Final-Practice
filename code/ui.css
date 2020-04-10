@@ -79,17 +79,19 @@
 {
     position : absolute ; 
     left :100px; 
-    top:15px;
+    top:1px;
     color: yellow;
+    margin: 0 auto;
     /*background-color: rgba(14, 155, 220, 0.741);*/
 }
 
 #cronometro{
+    position: absolute;
     /*margin: 10px auto;*/
     width: 540px;
     height: 115px;
     z-index: 10000;
-    position: fixed;
+    
     left: 40%;
     color: yellow;
 }

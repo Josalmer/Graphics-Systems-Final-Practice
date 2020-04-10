@@ -4,8 +4,6 @@ class MyScene extends THREE.Scene {
   constructor(myCanvas) {
     super();
 
-    this.showInitMenu = true;
-
     this.renderer = this.createRenderer(myCanvas);
 
     this.gui = this.createGUI();
@@ -13,6 +11,8 @@ class MyScene extends THREE.Scene {
     this.createLights();
 
     this.createCamera();
+
+    this.userInt = new UserInterface();
 
     this.axis = new THREE.AxesHelper(10);
     this.add(this.axis);
@@ -110,16 +110,21 @@ class MyScene extends THREE.Scene {
     };
   }
 
+  showHideLoadScreen(){
+    //document.getElementById("lyr_loading").style.display = "block";
+  }
+
   showHideHelp() {
-    this.showInitMenu = !this.showInitMenu;
-    document.getElementById("menuAyuda").style.display = this.showInitMenu ? "none" : "block";
+    this.userInt.userData.showHelpMenu = !this.userInt.userData.showHelpMenu;
+    document.getElementById("menuAyuda").style.display = this.userInt.userData.showHelpMenu ? "none" : "block";
   }
 
   startGame() {
     document.getElementById("menuInicio").style.display = "none";
-    this.showInitMenu = false;
-    if (this.game.gameData.gameRunning == false) {
-      console.log(this.game.gameData);
+    document.getElementById("main-header").style.display = "block";
+    this.userInt.userData.showInitMenu = false;
+    this.userInt.userData.showHeader = true;
+    if(this.game.gameData.gameRunning == false){
       this.game.gameData.gameStartedAt = new Date();
     }
     this.game.gameData.gameRunning = true;
@@ -162,7 +167,6 @@ class MyScene extends THREE.Scene {
     requestAnimationFrame(() => this.update())
     this.spotLight.intensity = this.guiControls.lightIntensity;
     this.axis.visible = this.guiControls.axisOnOff;
-
     //Evita que se actualice el cronometro despues de haber iniciado el juego (pulsado espacio)
     if(this.game.gameData.gameRunning == true){
       this.updateCrono();

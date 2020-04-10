@@ -1,17 +1,18 @@
 class Obstacle extends THREE.Object3D {
-  constructor(type) {
+  constructor(type, game) {
     super();
-    this.model = this.createObstacle(type);
+    this.model = this.createObstacle(type, game);
     this.add(this.model);
-    
+
     this.collisionsModel = this.createCollisionsModel();
-    this.add(this.collisionsModel); 
+    this.add(this.collisionsModel);
   }
 
-  createObstacle(type) {
+  createObstacle(type, game) {
     let mat_url = this.selectType(type) + '.mtl';
     let obj_url = this.selectType(type) + '.obj';
     var model = new THREE.Object3D();
+
     // instantiate a loader
     var mtLoader = new THREE.MTLLoader();
     mtLoader.load(mat_url, function (materials) {
@@ -28,28 +29,23 @@ class Obstacle extends THREE.Object3D {
           object.scale.set(1.2, 1.2, 1.2);
           object.position.y = 0.68;
           object.rotation.y = - Math.PI;
-        },
-        // called when loading is in progresses
-        function (xhr) {
-          console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-        },
-        // called when loading has errors
-        function (error) {
-          console.log('An error happened');
+          console.log("loader");
+          game.countObstacleLoaded();
         }
       );
     });
+
     return model;
   }
 
   createCollisionsModel() {
     var collisions = new THREE.Object3D();
-    var geometry = new THREE.CubeGeometry( 0.48, 1.2, 0.48 );
-    var material = new THREE.MeshBasicMaterial( {color: 0xff0000, transparent: true, opacity: 0} );
-    var cube = new THREE.Mesh( geometry, material );
+    var geometry = new THREE.CubeGeometry(0.48, 1.2, 0.48);
+    var material = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0 });
+    var cube = new THREE.Mesh(geometry, material);
     cube.position.y = 1.275;
     cube.position.z = 0.05;
-    collisions.add( cube );
+    collisions.add(cube);
 
     return collisions;
   }

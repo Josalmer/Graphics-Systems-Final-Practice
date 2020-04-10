@@ -33,7 +33,9 @@ class CrazyWagonGame extends THREE.Object3D {
       t_prev: 99,
       timeNewLap: Date.now(),
       gameRunning: false,
-      gameStartedAt: null
+      gameStartedAt: null,
+      obstaclesLoaded: 0,
+      nObstacles: 45
     };
     return gameData;
   }
@@ -68,13 +70,21 @@ class CrazyWagonGame extends THREE.Object3D {
     return this.octree;
   }
 
-  loadObstacles() {
-    var obstacles = new THREE.Group();;
+  countObstacleLoaded() {
+    this.gameData.obstaclesLoaded++;
+    if (this.gameData.obstaclesLoaded == this.gameData.nObstacles) {
+      document.getElementById("lyr_loading").style.display = "none";
+    }
+  }
 
-    for (let i = 0; i < 45; i++) {
-      let obstacle = new Obstacle(Math.trunc(this.getRandom(0, 6)));
+  loadObstacles() {
+    var obstacles = new THREE.Group();
+
+    for (let i = 0; i < this.gameData.nObstacles; i++) {
+      let obstacle = new Obstacle(Math.trunc(this.getRandom(0, 6)), this);
       obstacles.add(obstacle);
     }
+
     return obstacles;
   }
 
@@ -120,7 +130,7 @@ class CrazyWagonGame extends THREE.Object3D {
     if (this.gameData.t_prev > t) {
       // nueva vuelta     
       this.gameData.lapNumber += 1;
-      document.getElementById("Laps").innerHTML = "<h2>Vuelta Nº: " + this.gameData.lapNumber + "</h2>";
+      document.getElementById ("Laps").innerHTML = "<h2>Laps: "+this.gameData.lapNumber+"</h2>";
 
       if (this.gameData.currentTime - this.gameData.deltaTime >= this.gameData.minimumTime) {
         this.gameData.currentTime -= this.gameData.deltaTime;
