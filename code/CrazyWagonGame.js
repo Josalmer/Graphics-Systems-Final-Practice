@@ -52,7 +52,7 @@ class CrazyWagonGame extends THREE.Object3D {
     var obstacles = new THREE.Group();;
 
     for (let i = 0; i < 60; i++) {
-      let obstacle = new Obstacle(i);
+      let obstacle = new Obstacle(Math.trunc(this.getRandom(0, 6)));
       obstacles.add(obstacle);
     }
     return obstacles;
@@ -62,9 +62,14 @@ class CrazyWagonGame extends THREE.Object3D {
     this.placeObject(this.wagon, 0);// posicionar wagon
 
     // posicionar obstaculos
-    for (let i = 0; i < this.obstacles.children.length; i++) {
-      this.placeObject(this.obstacles.children[i], i / this.obstacles.children.length, i * (Math.PI / 4));
+    let n_obstacles = this.obstacles.children.length
+    for (let i = 0; i < n_obstacles; i++) {
+      this.placeObject(this.obstacles.children[i], i / n_obstacles, this.getRandom(0, 2 * Math.PI));
     }
+  }
+
+  getRandom(min, max) {
+    return Math.random() * (max - min) + min;
   }
 
   placeObject(obj, t, rotation = 0) {
@@ -109,13 +114,13 @@ class CrazyWagonGame extends THREE.Object3D {
   }
 
   turnRight() {
-    this.wagon.wagonModel.rotation.z -= 0.04;
-    this.wagon.wagonCam.rotation.z -= 0.04;
+    this.wagon.wagonModel.rotation.z -= 0.05;
+    this.wagon.wagonCam.rotation.z -= 0.05;
   }
 
   turnLeft() {
-    this.wagon.wagonModel.rotation.z += 0.04;
-    this.wagon.wagonCam.rotation.z += 0.04;
+    this.wagon.wagonModel.rotation.z += 0.05;
+    this.wagon.wagonCam.rotation.z += 0.05;
   }
 
   update() {

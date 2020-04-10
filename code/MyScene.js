@@ -39,7 +39,7 @@ class MyScene extends THREE.Scene {
   createGUI() {
     var gui = new dat.GUI();
     this.guiControls = new function () {
-      this.lightIntensity = 0.5;
+      this.lightIntensity = 1;
       this.axisOnOff = true;
       this.animate = false;
       this.wagonCamera = false;
@@ -95,32 +95,31 @@ class MyScene extends THREE.Scene {
           that.game.turnLeft();
           break;
         case 72: //Tecla H - Help
-          if (!that.menu_active) {
-            document.getElementById("menuAyuda").style.display = "block";
-            that.menu_active = true;
-          } else if (that.menu_active) {
-            that.menu_active = false;
-            document.getElementById("menuAyuda").style.display = "none";
-          }
+          that.showHideHelp();
           break;
         case 32: //espacio
-          document.getElementById("menuInicio").style.display = "none";
-          that.menu_active = false;
-          // al iniciar, darle a espacio
-          that.inicio = new Date();
-
-          that.guiControls.animate = true;
-          that.guiControls.wagonCamera = true;
-
+          that.startGame();
           break;
       }
     };
   }
 
+  showHideHelp() {
+    this.menu_active = !this.menu_active;
+    document.getElementById("menuAyuda").style.display = this.menu_active ? "none" : "block";
+  }
+
+  startGame() {
+    document.getElementById("menuInicio").style.display = "none";
+    this.menu_active = false;
+    this.inicio = new Date();
+    this.guiControls.animate = true;
+    this.guiControls.wagonCamera = true;
+  }
+
   updateCrono() {
     var ahora = new Date();
     var crono = new Date(ahora - this.inicio);
-    document.getElementById ("Laps").innerHTML = "<h2>Vuelta Nº: "+this.game.gameData.lapNumber+"</h2>";
     this.minutos = crono.getMinutes();
     this.seconds = crono.getSeconds();
     this.miliseconds = crono.getMilliseconds();
@@ -139,20 +138,8 @@ class MyScene extends THREE.Scene {
   }
 }
 
-// function start() {
-//   var scene = new MyScene("#WebGL-output");
-
-//   window.addEventListener("resize", () => scene.onWindowResize());
-//   //Llamada a la funcion que controla las entradas del teclado
-//   window.addEventListener("keydown", () => scene.setupKeyControls());
-
-//   scene.update();
-// };
-
 $(function () {
   var scene = new MyScene("#WebGL-output");
-  // document.getElementById("menu").style.display = "block";
-  //document.getElementById("menu").style.display = "none";
 
   window.addEventListener("resize", () => scene.onWindowResize());
   //Llamada a la funcion que controla las entradas del teclado
