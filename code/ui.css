@@ -78,14 +78,14 @@
 #Laps
 {
     position : absolute ; 
-    left :550px; 
-    top:20px;
+    left :100px; 
+    top:15px;
     color: yellow;
     /*background-color: rgba(14, 155, 220, 0.741);*/
 }
 
 #cronometro{
-    margin: 10px auto;
+    /*margin: 10px auto;*/
     width: 540px;
     height: 115px;
     z-index: 10000;
@@ -95,7 +95,7 @@
 }
 .reloj{
     float: left;
-    font-size: 80px;
+    font-size: 60px;
     font-family: Arial,sans-serif;
     z-index: 10000;
 }

@@ -4,7 +4,8 @@ class MyScene extends THREE.Scene {
   constructor(myCanvas) {
     super();
 
-    this.menu_active = true;
+    this.showInitMenu = true;
+
     this.renderer = this.createRenderer(myCanvas);
 
     this.gui = this.createGUI();
@@ -105,31 +106,45 @@ class MyScene extends THREE.Scene {
   }
 
   showHideHelp() {
-    this.menu_active = !this.menu_active;
-    document.getElementById("menuAyuda").style.display = this.menu_active ? "none" : "block";
+    this.showInitMenu = !this.showInitMenu;
+    document.getElementById("menuAyuda").style.display = this.showInitMenu ? "none" : "block";
   }
 
   startGame() {
     document.getElementById("menuInicio").style.display = "none";
-    this.menu_active = false;
-    this.inicio = new Date();
+    this.showInitMenu = false;
+    if(this.game.gameData.gameRunning == false){
+      console.log(this.game.gameData);
+      this.game.gameData.gameStartedAt = new Date();
+    }
+    this.game.gameData.gameRunning = true;
     this.guiControls.animate = true;
     this.guiControls.wagonCamera = true;
   }
 
   updateCrono() {
     var ahora = new Date();
-    var crono = new Date(ahora - this.inicio);
+    var crono = new Date(ahora - this.game.gameData.gameStartedAt);
+    
     this.minutos = crono.getMinutes();
     this.seconds = crono.getSeconds();
     this.miliseconds = crono.getMilliseconds();
+
+    document.getElementById ("Minutes").innerHTML = "<h2>"+this.minutos+":</h2>";
+    document.getElementById ("Seconds").innerHTML = "<h2>"+this.seconds+":</h2>";
+    document.getElementById ("Milliseconds").innerHTML = "<h2>"+this.miliseconds+"</h2>";
   }
 
   update() {
     requestAnimationFrame(() => this.update())
     this.spotLight.intensity = this.guiControls.lightIntensity;
     this.axis.visible = this.guiControls.axisOnOff;
-    this.updateCrono();
+
+    //Evita que se actualice el cronometro despues de haber iniciado el juego (pulsado espacio)
+    if(this.game.gameData.gameRunning == true){
+      this.updateCrono();
+    }
+    
     this.cameraControl.update();
     if (this.guiControls.animate) {
       this.game.update();

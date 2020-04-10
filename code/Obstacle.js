@@ -8,7 +8,6 @@ class Obstacle extends THREE.Object3D {
   createObstacle(type) {
     let mat_url = this.selectType(type) + '.mtl';
     let obj_url = this.selectType(type) + '.obj';
-    console.log(mat_url, obj_url);
     var model = new THREE.Object3D();
     // instantiate a loader
     var mtLoader = new THREE.MTLLoader();
@@ -23,8 +22,9 @@ class Obstacle extends THREE.Object3D {
         // called when resource is loaded
         function (object) {
           model.add(object);
+          object.scale.set(1.2, 1.2, 1.2);
           object.position.y = 0.68;
-          object.rotation.y = - 1.2 * Math.PI;
+          object.rotation.y = - Math.PI;
         },
         // called when loading is in progresses
         function (xhr) {

@@ -28,7 +28,9 @@ class CrazyWagonGame extends THREE.Object3D {
       currentTime: _initialTime + _deltaTime,
       lapNumber: 0,
       t_prev: 99,
-      timeNewLap: Date.now()
+      timeNewLap: Date.now(),
+      gameRunning: false,
+      gameStartedAt: null
     };
     return gameData;
   }
