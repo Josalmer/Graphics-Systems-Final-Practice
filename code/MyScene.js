@@ -20,8 +20,13 @@ class MyScene extends THREE.Scene {
     this.game = new CrazyWagonGame();
     this.add(this.game);
 
-    this.sky = new Environment();
-    this.add(this.sky);
+    this.environment = new Environment();
+    this.add(this.environment);
+
+    // this.collidableMeshList = [];
+    // for (let i = 0; i < this.game.obstacles.children.length; i++) {
+    //   this.collidableMeshList.push(this.game.obstacles.children[i]);
+    // }
   }
 
   createCamera() {
@@ -40,7 +45,7 @@ class MyScene extends THREE.Scene {
   createGUI() {
     var gui = new dat.GUI();
     this.guiControls = new function () {
-      this.lightIntensity = 1;
+      this.lightIntensity = 0.75;
       this.axisOnOff = true;
       this.animate = false;
       this.wagonCamera = false;
@@ -113,7 +118,7 @@ class MyScene extends THREE.Scene {
   startGame() {
     document.getElementById("menuInicio").style.display = "none";
     this.showInitMenu = false;
-    if(this.game.gameData.gameRunning == false){
+    if (this.game.gameData.gameRunning == false) {
       console.log(this.game.gameData);
       this.game.gameData.gameStartedAt = new Date();
     }
@@ -125,14 +130,32 @@ class MyScene extends THREE.Scene {
   updateCrono() {
     var ahora = new Date();
     var crono = new Date(ahora - this.game.gameData.gameStartedAt);
-    
+
     this.minutos = crono.getMinutes();
     this.seconds = crono.getSeconds();
     this.miliseconds = crono.getMilliseconds();
 
-    document.getElementById ("Minutes").innerHTML = "<h2>"+this.minutos+":</h2>";
-    document.getElementById ("Seconds").innerHTML = "<h2>"+this.seconds+":</h2>";
-    document.getElementById ("Milliseconds").innerHTML = "<h2>"+this.miliseconds+"</h2>";
+    document.getElementById("Minutes").innerHTML = "<h2>" + this.minutos + ":</h2>";
+    document.getElementById("Seconds").innerHTML = "<h2>" + this.seconds + ":</h2>";
+    document.getElementById("Milliseconds").innerHTML = "<h2>" + this.miliseconds + "</h2>";
+  }
+
+  CheckCollision() {
+    var wagon = this.game.wagon;
+    var mesh = wagon.collisionsModel.children[0];
+    var originPoint = wagon.position.clone();
+    for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++)
+    {		
+      var localVertex = mesh.geometry.vertices[vertexIndex].clone();
+      var globalVertex = localVertex.applyMatrix4( mesh.matrix );
+      var directionVector = globalVertex.sub( wagon.position );
+
+      var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+      var collisionResults = ray.intersectObjects( this.collidableMeshList );
+      if ( collisionResults.length > 0) {
+        console.log("Collision");
+      }
+    }	
   }
 
   update() {
@@ -144,12 +167,16 @@ class MyScene extends THREE.Scene {
     if(this.game.gameData.gameRunning == true){
       this.updateCrono();
     }
-    
+
     this.cameraControl.update();
     if (this.guiControls.animate) {
       this.game.update();
+      // this.CheckCollision();
     }
     this.renderer.render(this, this.getCamera());
+
+
+    // this.game.octree.update();
   }
 }
 

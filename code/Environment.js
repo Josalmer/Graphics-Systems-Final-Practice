@@ -1,5 +1,5 @@
 class Environment extends THREE.Object3D {
-  constructor(gui,titleGui) {
+  constructor() {
     super();
 
     var materialArray = [];
@@ -20,14 +20,10 @@ class Environment extends THREE.Object3D {
     for (var i = 0; i < 6; i++)
       materialArray[i].side = THREE.BackSide;
        
-    var skyboxGeo = new THREE.BoxGeometry( 200, 200, 200);
-    var skybox = new THREE.Mesh( skyboxGeo, materialArray );
+    var boxGeo = new THREE.BoxBufferGeometry( 200, 200, 200);
+    var box = new THREE.Mesh( boxGeo, materialArray );
     
-    this.add( skybox );
+    this.add( box );
     
-  }
-
-  update () {
-
   }
 }

@@ -3,6 +3,9 @@ class Obstacle extends THREE.Object3D {
     super();
     this.model = this.createObstacle(type);
     this.add(this.model);
+    
+    this.collisionsModel = this.createCollisionsModel();
+    this.add(this.collisionsModel); 
   }
 
   createObstacle(type) {
@@ -37,6 +40,18 @@ class Obstacle extends THREE.Object3D {
       );
     });
     return model;
+  }
+
+  createCollisionsModel() {
+    var collisions = new THREE.Object3D();
+    var geometry = new THREE.CubeGeometry( 0.48, 1.2, 0.48 );
+    var material = new THREE.MeshBasicMaterial( {color: 0xff0000, transparent: true, opacity: 0} );
+    var cube = new THREE.Mesh( geometry, material );
+    cube.position.y = 1.275;
+    cube.position.z = 0.05;
+    collisions.add( cube );
+
+    return collisions;
   }
 
   selectType(index) {

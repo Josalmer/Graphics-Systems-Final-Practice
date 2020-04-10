@@ -15,12 +15,15 @@ class CrazyWagonGame extends THREE.Object3D {
     this.obstacles = this.loadObstacles()
     this.add(this.obstacles);
 
+    // this.octree = this.loadOctree()
+    // this.add(this.octree);
+
     this.initModels();
   }
 
   initData() {
     var _initialTime = 45 * 1000; // 45 segundos una vuelta
-    var _deltaTime = 10 *1000;    // 10 segundos se recorta cada vuelta
+    var _deltaTime = 10 * 1000;    // 10 segundos se recorta cada vuelta
     var gameData = {
       initialTime: _initialTime,
       minimumTime: 15 * 1000,     // 20 segundos una vuelta
@@ -50,10 +53,25 @@ class CrazyWagonGame extends THREE.Object3D {
     return spline;
   }
 
+  loadOctree() {
+    this.octree = new THREE.Octree({
+      undeferred: false,      // mejor rendimiento: los objetos se añaden al hacer update
+      depthMax: Infinity,     // produnfidad maxima
+      objectsThreshold: 4,    // numero de objetos para subidividir un nodo
+      overlapPct: 0.2         // porcentaje de solapamiento entre nodos
+    });
+
+    for (let i = 0; i < this.obstacles.children.length; i++) {
+      this.octree.add(this.obstacles.children[0].collisionsModel.children[0]);
+    }
+
+    return this.octree;
+  }
+
   loadObstacles() {
     var obstacles = new THREE.Group();;
 
-    for (let i = 0; i < 60; i++) {
+    for (let i = 0; i < 45; i++) {
       let obstacle = new Obstacle(Math.trunc(this.getRandom(0, 6)));
       obstacles.add(obstacle);
     }
@@ -64,7 +82,7 @@ class CrazyWagonGame extends THREE.Object3D {
     this.placeObject(this.wagon, 0);// posicionar wagon
 
     // posicionar obstaculos
-    let n_obstacles = this.obstacles.children.length
+    let n_obstacles = this.obstacles.children.length;
     for (let i = 0; i < n_obstacles; i++) {
       this.placeObject(this.obstacles.children[i], i / n_obstacles, this.getRandom(0, 2 * Math.PI));
     }
@@ -82,6 +100,7 @@ class CrazyWagonGame extends THREE.Object3D {
     obj.lookAt(p); // ponemos al objeto mirando hacia la tangente
     if (rotation != 0) {
       obj.model.rotation.z = rotation;
+      obj.collisionsModel.rotation.z = rotation;
     }
   }
 
@@ -101,7 +120,7 @@ class CrazyWagonGame extends THREE.Object3D {
     if (this.gameData.t_prev > t) {
       // nueva vuelta     
       this.gameData.lapNumber += 1;
-      document.getElementById ("Laps").innerHTML = "<h2>Vuelta Nº: "+this.gameData.lapNumber+"</h2>";
+      document.getElementById("Laps").innerHTML = "<h2>Vuelta Nº: " + this.gameData.lapNumber + "</h2>";
 
       if (this.gameData.currentTime - this.gameData.deltaTime >= this.gameData.minimumTime) {
         this.gameData.currentTime -= this.gameData.deltaTime;
@@ -118,11 +137,13 @@ class CrazyWagonGame extends THREE.Object3D {
   turnRight() {
     this.wagon.wagonModel.rotation.z -= 0.05;
     this.wagon.wagonCam.rotation.z -= 0.05;
+    this.wagon.collisionsModel.rotation.z -= 0.05;
   }
 
   turnLeft() {
     this.wagon.wagonModel.rotation.z += 0.05;
     this.wagon.wagonCam.rotation.z += 0.05;
+    this.wagon.collisionsModel.rotation.z += 0.05;
   }
 
   update() {
@@ -131,7 +152,7 @@ class CrazyWagonGame extends THREE.Object3D {
     var p = this.spline.getPointAt(t);
     // obtenemos tangente a la curva en p
     var tangente = this.spline.getTangentAt(t);
-    
+
     this.wagon.position.copy(p);
     p.add(tangente);
     this.wagon.lookAt(p); // ponemos al objeto mirando hacia la tangente

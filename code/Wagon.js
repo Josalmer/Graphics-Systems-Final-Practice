@@ -4,6 +4,9 @@ class Wagon extends THREE.Object3D {
     this.wagonModel = this.createWagonModel();
     this.add(this.wagonModel);
 
+    this.collisionsModel = this.createCollisionsModel();
+    this.add(this.collisionsModel);
+
     this.wagonCam = this.createWagonCam();
     this.add(this.wagonCam);
   }
@@ -58,5 +61,17 @@ class Wagon extends THREE.Object3D {
     camera.add(splineCamera)
 
     return camera;
+  }
+
+  createCollisionsModel() {
+    var collisions = new THREE.Object3D();
+    var geometry = new THREE.CubeGeometry( 0.85, 0.85, 2.83);
+    var material = new THREE.MeshBasicMaterial( {color: 0xffff00, transparent: true, opacity: 0} );
+    var box = new THREE.Mesh( geometry, material );
+    box.position.y = 1.4;
+    box.position.z = 0.04;
+    collisions.add( box );
+
+    return collisions;
   }
 }
