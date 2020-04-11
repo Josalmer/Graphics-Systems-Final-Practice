@@ -4,15 +4,13 @@ class MyScene extends THREE.Scene {
   constructor(myCanvas) {
     super();
 
-    this.renderer = this.createRenderer(myCanvas);
+    this.interfaceData = this.InterfaceData();
 
-    this.gui = this.createGUI();
+    this.renderer = this.createRenderer(myCanvas);
 
     this.createLights();
 
     this.createCamera();
-
-    this.userInt = new UserInterface();
 
     this.axis = new THREE.AxesHelper(10);
     this.add(this.axis);
@@ -29,6 +27,23 @@ class MyScene extends THREE.Scene {
     // }
   }
 
+
+  ///////////////////////////////////////////////////////////////////////////
+  // SCENE MUST BE //
+  ///////////////////////////////////////////////////////////////////////////
+
+  InterfaceData() {
+    var userInt = {
+      showInitMenu: true,
+      showHelpMenu: true,
+      lightIntensity: 0.75,
+      axisOnOff: true,
+      animate: false,
+      wagonCamera: false
+    };
+    return userInt;
+  }
+
   createCamera() {
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
     this.camera.position.set(30, 70, 60);
@@ -42,27 +57,10 @@ class MyScene extends THREE.Scene {
     this.cameraControl.target = look;
   }
 
-  createGUI() {
-    var gui = new dat.GUI();
-    this.guiControls = new function () {
-      this.lightIntensity = 0.75;
-      this.axisOnOff = true;
-      this.animate = false;
-      this.wagonCamera = false;
-    }
-    var folder = gui.addFolder('Luz y Ejes');
-    folder.add(this.guiControls, 'lightIntensity', 0, 1, 0.1).name('Intensidad de la Luz : ');
-    folder.add(this.guiControls, 'axisOnOff').name('Mostrar ejes : ');
-    folder.add(this.guiControls, 'animate').name('Animation : ').listen();
-    folder.add(this.guiControls, 'wagonCamera').name('Wagon view : ').listen();
-
-    return gui;
-  }
-
   createLights() {
     var ambientLight = new THREE.AmbientLight(0xccddee, 0.35);
     this.add(ambientLight);
-    this.spotLight = new THREE.SpotLight(0xffffff, this.guiControls.lightIntensity);
+    this.spotLight = new THREE.SpotLight(0xffffff, this.interfaceData.lightIntensity);
     this.spotLight.position.set(60, 60, 40);
     this.add(this.spotLight);
   }
@@ -75,10 +73,6 @@ class MyScene extends THREE.Scene {
     return renderer;
   }
 
-  getCamera() {
-    return this.guiControls.wagonCamera ? this.game.wagon.wagonCam.children[0] : this.camera;
-  }
-
   setCameraAspect(ratio) {
     this.camera.aspect = ratio;
     this.camera.updateProjectionMatrix();
@@ -87,6 +81,45 @@ class MyScene extends THREE.Scene {
   onWindowResize() {
     this.setCameraAspect(window.innerWidth / window.innerHeight);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+  }
+
+  ///////////////////////////////////////////////////////////////////////////
+  // GETTERS //
+  ///////////////////////////////////////////////////////////////////////////
+
+  getCamera() {
+    return this.interfaceData.wagonCamera ? this.game.wagon.wagonCam.children[0] : this.camera;
+  }
+
+  ///////////////////////////////////////////////////////////////////////////
+  // CONTROLS //
+  ///////////////////////////////////////////////////////////////////////////
+
+  toggleView(){
+    this.interfaceData.wagonCamera = !this.interfaceData.wagonCamera;
+  }
+
+  toggleAnimation(){
+    this.interfaceData.animate = !this.interfaceData.animate;
+  }
+
+  showHideHelp() {
+    this.interfaceData.showHelpMenu = !this.interfaceData.showHelpMenu;
+    document.getElementById("menuAyuda").style.display = this.interfaceData.showHelpMenu ? "none" : "block";
+  }
+
+  startGame() {
+    document.getElementById("menuInicio").style.display = "none";
+    document.getElementById("main-header").style.display = "block";
+    this.interfaceData.showInitMenu = false;
+    this.interfaceData.showHeader = true;
+    if(this.game.gameData.gameRunning == false){
+      this.game.gameData.gameStartedAt = new Date();
+    }
+    this.game.gameData.gameRunning = true;
+    this.interfaceData.animate = true;
+    this.interfaceData.wagonCamera = true;
+    
   }
 
   //Funcion para controlar la entrada de teclado
@@ -106,31 +139,19 @@ class MyScene extends THREE.Scene {
         case 32: //espacio
           that.startGame();
           break;
+        case 67: //Letra C
+          that.toggleView();
+          break;
+        case 80: //Letra P
+          that.toggleAnimation();
+          break;
       }
     };
   }
 
-  showHideLoadScreen(){
-    //document.getElementById("lyr_loading").style.display = "block";
-  }
-
-  showHideHelp() {
-    this.userInt.userData.showHelpMenu = !this.userInt.userData.showHelpMenu;
-    document.getElementById("menuAyuda").style.display = this.userInt.userData.showHelpMenu ? "none" : "block";
-  }
-
-  startGame() {
-    document.getElementById("menuInicio").style.display = "none";
-    document.getElementById("main-header").style.display = "block";
-    this.userInt.userData.showInitMenu = false;
-    this.userInt.userData.showHeader = true;
-    if(this.game.gameData.gameRunning == false){
-      this.game.gameData.gameStartedAt = new Date();
-    }
-    this.game.gameData.gameRunning = true;
-    this.guiControls.animate = true;
-    this.guiControls.wagonCamera = true;
-  }
+  ///////////////////////////////////////////////////////////////////////////
+  // ANIMATION //
+  ///////////////////////////////////////////////////////////////////////////
 
   updateCrono() {
     var ahora = new Date();
@@ -144,6 +165,27 @@ class MyScene extends THREE.Scene {
     document.getElementById("Seconds").innerHTML = "<h2>" + this.seconds + ":</h2>";
     document.getElementById("Milliseconds").innerHTML = "<h2>" + this.miliseconds + "</h2>";
   }
+
+  update() {
+    requestAnimationFrame(() => this.update())
+    this.spotLight.intensity = this.interfaceData.lightIntensity;
+    this.axis.visible = this.interfaceData.axisOnOff;
+
+    this.cameraControl.update();
+
+    if (this.interfaceData.animate) {
+      this.game.update();
+      this.updateCrono();
+      // this.CheckCollision();
+    }
+    this.renderer.render(this, this.getCamera());
+
+    // this.game.octree.update();
+  }
+
+  ///////////////////////////////////////////////////////////////////////////
+  // INTERACTION //
+  ///////////////////////////////////////////////////////////////////////////
 
   CheckCollision() {
     var wagon = this.game.wagon;
@@ -161,26 +203,6 @@ class MyScene extends THREE.Scene {
         console.log("Collision");
       }
     }	
-  }
-
-  update() {
-    requestAnimationFrame(() => this.update())
-    this.spotLight.intensity = this.guiControls.lightIntensity;
-    this.axis.visible = this.guiControls.axisOnOff;
-    //Evita que se actualice el cronometro despues de haber iniciado el juego (pulsado espacio)
-    if(this.game.gameData.gameRunning == true){
-      this.updateCrono();
-    }
-
-    this.cameraControl.update();
-    if (this.guiControls.animate) {
-      this.game.update();
-      // this.CheckCollision();
-    }
-    this.renderer.render(this, this.getCamera());
-
-
-    // this.game.octree.update();
   }
 }
 

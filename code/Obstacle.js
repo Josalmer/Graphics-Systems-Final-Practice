@@ -29,7 +29,6 @@ class Obstacle extends THREE.Object3D {
           object.scale.set(1.2, 1.2, 1.2);
           object.position.y = 0.68;
           object.rotation.y = - Math.PI;
-          console.log("loader");
           game.countObstacleLoaded();
         }
       );
