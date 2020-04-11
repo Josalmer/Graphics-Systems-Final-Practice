@@ -25,7 +25,7 @@ class CrazyWagonGame extends THREE.Object3D {
   getObstacleAtIndex(index) {
     return this.obstacles.children[index];
   }
-  
+
   ///////////////////////////////////////////////////////////////////////////
   // BUILD AND LOAD FUNCTIONS //
   ///////////////////////////////////////////////////////////////////////////
@@ -71,8 +71,8 @@ class CrazyWagonGame extends THREE.Object3D {
       timeNewLap: Date.now(),
       gameStartedAt: null,
       obstaclesLoaded: 0,
-      nObstacles: 45,
-      nballoons: 30,
+      nObstacles: 35,
+      nballoons: 20,
       playerScore: 0,
       ballonsDeleted: 0,
       lives: 3
@@ -91,7 +91,7 @@ class CrazyWagonGame extends THREE.Object3D {
   countObstacleLoaded() {
     this.gameData.obstaclesLoaded++;
     if (this.gameData.obstaclesLoaded == this.gameData.nObstacles) {
-      setTimeout(() => {  
+      setTimeout(() => {
         document.getElementById("game").style.display = "block";
         document.getElementById("loading-screen").style.display = "none";
       }, 2000);
@@ -99,10 +99,23 @@ class CrazyWagonGame extends THREE.Object3D {
   }
 
   createBalloons() {
+    var positions = [
+      new THREE.Vector3(10, 10, 10), new THREE.Vector3(-10, 15, 10),
+      new THREE.Vector3(10, 20, -10), new THREE.Vector3(-10, 25, -10),
+      new THREE.Vector3(20, 30, 20), new THREE.Vector3(-20, 35, 20),
+      new THREE.Vector3(20, 40, -20), new THREE.Vector3(-20, 45, -20),
+      new THREE.Vector3(30, 50, 30), new THREE.Vector3(-30, 55, 30),
+      new THREE.Vector3(30, 60, -30), new THREE.Vector3(-30, 55, -30),
+      new THREE.Vector3(40, 50, 40), new THREE.Vector3(-40, 45, 40),
+      new THREE.Vector3(40, 40, -40), new THREE.Vector3(-40, 35, -40),
+      new THREE.Vector3(50, 30, 50), new THREE.Vector3(-50, 25, 50),
+      new THREE.Vector3(50, 20, -50), new THREE.Vector3(-50, 15, -50)
+    ]
     var balloons = [];
-    for (let i = 0; i < this.gameData.nballoons; ++i) {
+    for (let i = 0; i < this.gameData.nballoons; i++) {
       let radio = Math.floor(this.getRandom(1, 3));
       let newBalloon = this.createBalloon(radio);
+      newBalloon.position.copy(positions[i]);
       balloons.push(newBalloon);
       this.add(newBalloon);
     }
@@ -114,16 +127,9 @@ class CrazyWagonGame extends THREE.Object3D {
     var ballMaterial = new THREE.MeshPhongMaterial({ map: ballTexture });
     var ballGeo = new THREE.SphereGeometry(radio);
     var ball = new THREE.Mesh(ballGeo, ballMaterial);
-    this.setBalloonPosition(ball);
+    ball.subiendo = false;
 
     return ball;
-  }
-
-  setBalloonPosition(ball) {
-    var posX = this.getRandom(-100, 100);
-    var posZ = this.getRandom(-100, 100);
-    ball.position.set(posX, -103, posZ);
-    ball.castShadow = true;
   }
 
   loadOctree() {
@@ -200,9 +206,21 @@ class CrazyWagonGame extends THREE.Object3D {
   moveballoons() {
     for (let i = 0; i < this.balloons.length; i++) {
       let ballon = this.getBallonAtIndex(i);
-      ballon.position.y += this.getRandom(0, 0.5);
-      if (ballon.position.y > 100) { //Aqui controlare si se ha picado, que aparezca de nuevo
-        this.setBalloonPosition(ballon);
+      let veloc = i * 0.015;
+      if (ballon.subiendo) {
+        if (ballon.position.y < 70) {
+          ballon.position.y += veloc;
+        } else {
+          ballon.subiendo = false;
+          ballon.position.y -= veloc;
+        }
+      } else {
+        if (ballon.position.y > 4) {
+          ballon.position.y -= veloc;
+        } else {
+          ballon.subiendo = true;
+          ballon.position.y += veloc;
+        }
       }
     }
   }

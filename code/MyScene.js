@@ -108,6 +108,7 @@ class MyScene extends THREE.Scene {
     if (this.game.gameData.gameStartedAt == null) {
       document.getElementById("menuInicio").style.display = "none";
       document.getElementById("main-header").style.display = "block";
+      document.getElementById("balloons").textContent = 'Balloons destroyed: 0 / ' + this.game.gameData.nballoons;
       this.interfaceData.showInitMenu = false;
       this.interfaceData.showHeader = true;
       this.game.gameData.gameStartedAt = new Date();
@@ -189,22 +190,36 @@ class MyScene extends THREE.Scene {
   // INTERACTION //
   ///////////////////////////////////////////////////////////////////////////
 
+  updateStatAfterPickingBalloon() {
+    this.game.gameData.playerScore += 100 * (this.game.gameData.lapNumber + 1);
+    this.game.gameData.ballonsDeleted++;
+    document.getElementById("balloons").textContent = 'Balloons destroyed: ' + this.game.gameData.ballonsDeleted + ' / ' + this.game.gameData.nballoons;
+  }
+
   checkRayPicking(event) {
+    var that = this;
     var mousePosition = new THREE.Vector2();
    //Calculo de la posicion (x,y) del click del raton
-    mousePosition.x = (event.clientX / window.innerWidth)* 2 - 1; //Multiplico por 100 para que cuadre con la pos de los objetos
+    mousePosition.x = (event.clientX / window.innerWidth)* 2 - 1;
     mousePosition.y = 1 - 2 * (event.clientY / window.innerHeight);
 
     //Crea un rayo que parte de la camara y pasa por la posicion donde se ha clickado
     var raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mousePosition, this.getCamera());  
-    var pickedObjects = null;
     var intersectedObjects = raycaster.intersectObjects(this.game.balloons);
     if(intersectedObjects.length > 0){
-      this.game.gameData.playerScore += 100;
-      // borrar de this.game.balloons (array de mesh)
-      pickedObjects = intersectedObjects[0].object;
-      pickedObjects.scale.set(10,10,10);
+
+      this.updateStatAfterPickingBalloon();
+
+      // Hide object and make unselectable
+      let pickedObject = intersectedObjects[0].object;
+      this.game.balloons = this.game.balloons.filter(x => x != pickedObject);
+      var material1 = new THREE.MeshBasicMaterial( {color: 0xff0000} );
+      var material2 = new THREE.MeshBasicMaterial( {color: 0x000000, transparent: true, opacity: 0} );
+      pickedObject.material = material1;
+      setTimeout(() => {  
+        pickedObject.material = material2;
+      }, 2000);
     }
   }
 
