@@ -170,7 +170,7 @@ class MyScene extends THREE.Scene {
 
   updateScore() {
     this.game.gameData.playerScore += 0.1 * (this.game.gameData.lapNumber + 1);
-    document.getElementById("score").textContent = "Crono: " + Math.trunc(this.game.gameData.playerScore) + ' points';
+    document.getElementById("score").textContent = "Score: " + Math.trunc(this.game.gameData.playerScore) + ' points';
   }
 
   update() {
