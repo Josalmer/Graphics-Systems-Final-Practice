@@ -20,11 +20,6 @@ class MyScene extends THREE.Scene {
 
     this.environment = new Environment();
     this.add(this.environment);
-
-    this.raycasterBalloonsList = [];
-    for (let i = 0; i < this.game.balloons.children.length; i++) {
-      this.raycasterBalloonsList.push(this.game.getBallonAtIndex(i).ball);
-    }
   }
 
 
@@ -204,11 +199,10 @@ class MyScene extends THREE.Scene {
     var raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(mousePosition, this.getCamera());  
     var pickedObjects = null;
-    var intersectedObjects = raycaster.intersectObjects(this.raycasterBalloonsList);
+    var intersectedObjects = raycaster.intersectObjects(this.game.balloons);
     if(intersectedObjects.length > 0){
       this.game.gameData.playerScore += 100;
-      // borrar de this.raycasterBalloonsList (array de mesh)
-      // borrar de this.game.balloons (array o grupo de objetos)
+      // borrar de this.game.balloons (array de mesh)
       pickedObjects = intersectedObjects[0].object;
       pickedObjects.scale.set(10,10,10);
     }
