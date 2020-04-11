@@ -21,11 +21,9 @@ class MyScene extends THREE.Scene {
     this.environment = new Environment();
     this.add(this.environment);
 
-
-    this.mousePosition = new THREE.Vector2();
     this.raycasterBalloonsList = [];
     for (let i = 0; i < this.game.balloons.children.length; i++) {
-      this.raycasterBalloonsList.push(this.game.getBallonAtIndex(i));
+      this.raycasterBalloonsList.push(this.game.getBallonAtIndex(i).ball);
     }
   }
 
@@ -125,7 +123,7 @@ class MyScene extends THREE.Scene {
 
   onMouseDown (event) { 
     if (event.button == 0) {   // Left button
-      this.checkRayPicking();
+      this.checkRayPicking(event);
     }
   }
 
@@ -196,28 +194,24 @@ class MyScene extends THREE.Scene {
   // INTERACTION //
   ///////////////////////////////////////////////////////////////////////////
 
-  checkRayPicking() {
+  checkRayPicking(event) {
+    var mousePosition = new THREE.Vector2();
    //Calculo de la posicion (x,y) del click del raton
-    this.mousePosition.x = (event.clientX / window.innerWidth)* 2 - 1; //Multiplico por 100 para que cuadre con la pos de los objetos
-    this.mousePosition.y = (event.clientY / window.innerHeight)* 2 + 1;
+    mousePosition.x = (event.clientX / window.innerWidth)* 2 - 1; //Multiplico por 100 para que cuadre con la pos de los objetos
+    mousePosition.y = 1 - 2 * (event.clientY / window.innerHeight);
 
     //Crea un rayo que parte de la camara y pasa por la posicion donde se ha clickado
     var raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(this.mousePosition, this.getCamera());  
-
+    raycaster.setFromCamera(mousePosition, this.getCamera());  
     var pickedObjects = null;
-
-    console.log(this.raycasterBalloonsList);
-    var intersectedObjects = raycaster.intersectObjects(this.children, true);
-
-    console.log(intersectedObjects);
+    var intersectedObjects = raycaster.intersectObjects(this.raycasterBalloonsList);
     if(intersectedObjects.length > 0){
+      this.game.gameData.playerScore += 100;
+      // borrar de this.raycasterBalloonsList (array de mesh)
+      // borrar de this.game.balloons (array o grupo de objetos)
       pickedObjects = intersectedObjects[0].object;
       pickedObjects.scale.set(10,10,10);
     }
-
-    console.log(this.mousePosition); 
-
   }
 
   CheckCollision() {
