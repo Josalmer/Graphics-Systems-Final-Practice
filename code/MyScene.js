@@ -172,6 +172,10 @@ class MyScene extends THREE.Scene {
     document.getElementById("score").textContent = "Crono: " + Math.trunc(this.game.gameData.playerScore) + ' points';
   }
 
+  updateScore() {
+
+  }
+
   update() {
     requestAnimationFrame(() => this.update())
     this.spotLight.intensity = this.interfaceData.lightIntensity;
@@ -180,6 +184,7 @@ class MyScene extends THREE.Scene {
     this.cameraControl.update();
 
     if (this.interfaceData.animate) {
+      console.log(this);
       this.game.update();
       this.updateStats();
       // this.CheckCollision();
