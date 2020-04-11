@@ -3,91 +3,73 @@
 <html>
 
 <head>
-    <title>The Crazy Wagon</title>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="ui.css"/>
-    <script type="text/javascript" src="./libs/three.js"></script>
-    <script type="text/javascript" src="./libs/jquery.js"></script>
-    <script type="text/javascript" src="./libs/dat.gui.js"></script>
-    <script type="text/javascript" src="./libs/Octree.js"></script>
-    <script type="text/javascript" src="./libs/TrackballControls.js"></script>
-    <script type="text/javascript" src="./libs/MTLLoader.js"></script>
-    <script type="text/javascript" src="./libs/OBJLoader.js"></script>
-    <script type="text/javascript" src="Obstacle.js"></script>
-    <script type="text/javascript" src="Rail.js"></script>
-    <script type="text/javascript" src="Wagon.js"></script>
-    <script type="text/javascript" src="UserInterface.js"></script>
-    <script type="text/javascript" src="CrazyWagonGame.js"></script>
-    <script type="text/javascript" src="Environment.js"></script>
-    <script type="text/javascript" src="MyScene.js"></script>
-<!--     <script>
-        $(document).ready(function() {
-            setTimeout(function() {
-                $("#lyr_loading").fadeOut(500);
-                
-            },1000); //tiempo de carga modificar este
-
-            setTimeout(function() {
-                $("#WebGL-output").fadeIn(500);
-                $("#menuInicio").fadeIn(500);
-            },3000);
-        });
-    </script> -->
-
+  <title>The Crazy Wagon</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="ui.css" />
+  <script type="text/javascript" src="./libs/three.js"></script>
+  <script type="text/javascript" src="./libs/jquery.js"></script>
+  <script type="text/javascript" src="./libs/dat.gui.js"></script>
+  <script type="text/javascript" src="./libs/Octree.js"></script>
+  <script type="text/javascript" src="./libs/TrackballControls.js"></script>
+  <script type="text/javascript" src="./libs/MTLLoader.js"></script>
+  <script type="text/javascript" src="./libs/OBJLoader.js"></script>
+  <script type="text/javascript" src="Obstacle.js"></script>
+  <script type="text/javascript" src="Rail.js"></script>
+  <script type="text/javascript" src="Wagon.js"></script>
+  <script type="text/javascript" src="UserInterface.js"></script>
+  <script type="text/javascript" src="CrazyWagonGame.js"></script>
+  <script type="text/javascript" src="Environment.js"></script>
+  <script type="text/javascript" src="MyScene.js"></script>
 </head>
+
 <body>
+  <header id="main-header">
+    <div id="Laps"> </div>
 
-<header id="main-header">
-        
-</header><!-- / #main-header -->
+    <div id="cronometro">
+      <div class="reloj" id="Minutes"></div>
+      <div class="reloj" id="Seconds"></div>
+      <div class="reloj" id="Milliseconds"></div>
+    </div>
+  </header><!-- / #main-header -->
 
-
-<!-- Contenedor para la pantalla de carga y logo -->
-<div id="lyr_loading">
+  <!-- Contenedor para la pantalla de carga y logo -->
+  <div id="lyr_loading">
     <div id="lyr_loading_background"></div>
     <div id="lyr_loading_logo" class="ui_logo"></div>
-</div>
+  </div>
 
-<!-- Este boton esta asociado a la funcion start parra lanzar toda la escena -->
-<!-- <button onclick="start()">
+  <!-- Este boton esta asociado a la funcion start parra lanzar toda la escena -->
+  <!-- <button onclick="start()">
   Comenzar el juego
 </button> -->
 
-<div id="Laps"> </div>
-
-<div id="cronometro">
-    <div class="reloj" id="Minutes"></div>
-    <div class="reloj" id="Seconds"></div>
-    <div class="reloj" id="Milliseconds"></div>
-</div>
-
-<!-- --------------- MENU PRINCIPAL DEL JUEGO ---------------- -->
-<div id="menuInicio">
+  <!-- --------------- MENU INICIO DEL JUEGO ---------------- -->
+  <div id="menuInicio">
     <h1>Menu Principal</h1>
     <h2> - Controles - </h2>
     <h3>
-        <li>Ayuda - "h/H"</li>
-        <li>Izquierda - "A / LEFT ARROW"</li>
-        <li>Derecha - "D / RIGTH ARROW"</li>
-        
+      <li>Ayuda - "H"</li>
+      <li>Izquierda - "A / LEFT ARROW"</li>
+      <li>Derecha - "D / RIGTH ARROW"</li>
     </h3>
+    <h2> - PULSA ESPACIO PARA COMENZAR -</h2>
+  </div>
 
-    <h2> - PULSA ESPACIO PARA EMPEZAR -</h2>
-</div>
-
-<div id="menuAyuda">
+  <!-- --------------- MENU INICIO DEL JUEGO ---------------- -->
+  <div id="menuAyuda">
     <h1> - Controles - </h1>
     <h2>
-        <li>Abrir/Cerrar Ayuda - "H"</li>
-        <li>Izquierda - "A / LEFT ARROW"</li>
-        <li>Derecha - "D / RIGTH ARROW"</li>
-        
+      <li>Abrir/Cerrar Ayuda - "H"</li>
+      <li>Izquierda - "A / LEFT ARROW"</li>
+      <li>Derecha - "D / RIGTH ARROW"</li>
     </h2>
-</div>
+  </div>
 
-<!-- Contenedor para el resto de la aplicación -->
-<div id="WebGL-output">
-</div>
+  <!-- Contenedor para el resto de la aplicación -->
+  <div id="WebGL-output">
+  </div>
 
 </body>
+
 </html>
