@@ -21,10 +21,10 @@ class MyScene extends THREE.Scene {
     this.environment = new Environment();
     this.add(this.environment);
 
-    this.collidableMeshList = [];
-    for (let i = 0; i < this.game.balloons.children.length; i++) {
-      this.collidableMeshList.push(this.game.getBallonAtIndex(i));
-    }
+    // this.collidableMeshList = [];
+    // for (let i = 0; i < this.game.balloons.children.length; i++) {
+    //   this.collidableMeshList.push(this.game.getBallonAtIndex(i));
+    // }
   }
 
 
@@ -101,6 +101,7 @@ class MyScene extends THREE.Scene {
 
   toggleAnimation(){
     this.interfaceData.animate = !this.interfaceData.animate;
+    document.getElementById("pause").style.display = this.interfaceData.animate ? 'none' : 'block';
   }
 
   toggleHelp() {
@@ -139,9 +140,6 @@ class MyScene extends THREE.Scene {
         case 72: //Tecla H - Help
           that.toggleHelp();
           break;
-        case 32: //espacio
-          that.startGame();
-          break;
         case 67: //Letra C
           that.toggleView();
           break;
@@ -156,21 +154,22 @@ class MyScene extends THREE.Scene {
   // ANIMATION //
   ///////////////////////////////////////////////////////////////////////////
 
+  updateStats() {
+    this.updateCrono();
+    this.updateScore();
+  }
+
   updateCrono() {
-    var ahora = new Date();
-    var crono = new Date(ahora - this.game.gameData.gameStartedAt);
+    let ahora = new Date();
+    let crono = new Date(ahora - this.game.gameData.gameStartedAt);
+    let output = "Time: "  + crono.getMinutes() + ':' + crono.getSeconds() + ':' + Math.trunc(crono.getMilliseconds() / 10);
 
-    this.minutos = crono.getMinutes();
-    this.seconds = crono.getSeconds();
-    this.miliseconds = crono.getMilliseconds();
-
-    document.getElementById("Minutes").innerHTML = "<h2>" + this.minutos + ":</h2>";
-    document.getElementById("Seconds").innerHTML = "<h2>" + this.seconds + ":</h2>";
-    document.getElementById("Milliseconds").innerHTML = "<h2>" + this.miliseconds + "</h2>";
+    document.getElementById("crono").textContent = output;
   }
 
   updateScore() {
-
+    this.game.gameData.playerScore += 0.1 * (this.game.gameData.lapNumber + 1);
+    document.getElementById("score").textContent = "Crono: " + Math.trunc(this.game.gameData.playerScore) + ' points';
   }
 
   update() {
@@ -181,9 +180,8 @@ class MyScene extends THREE.Scene {
     this.cameraControl.update();
 
     if (this.interfaceData.animate) {
-      console.log(this);
       this.game.update();
-      this.updateCrono();
+      this.updateStats();
       // this.CheckCollision();
     }
     this.renderer.render(this, this.getCamera());
@@ -220,6 +218,11 @@ class MyScene extends THREE.Scene {
 
 $(function () {
   var scene = new MyScene("#WebGL-output");
+
+  var startButton = document.getElementById( 'start-game-button' );
+  startButton.onclick = function StartAnimation() {
+    scene.startGame();
+  }
 
   window.addEventListener("resize", () => scene.onWindowResize());
   //Llamada a la funcion que controla las entradas del teclado

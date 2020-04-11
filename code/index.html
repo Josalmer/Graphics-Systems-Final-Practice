@@ -23,52 +23,47 @@
 </head>
 
 <body>
-  <header id="main-header">
-    <div id="Laps"></div>
-    <div id="cronometro">
-      <div class="reloj" id="Minutes"></div>
-      <div class="reloj" id="Seconds"></div>
-      <div class="reloj" id="Milliseconds"></div>
+  <div id="game">
+    <row id="main-header">
+      <span id="header-span">
+        <span id="laps">Laps: 0</span>
+        <span id="score">Score: 0 points</span>
+        <span id="crono">Time: 0:0:00</span>
+        <span id="lives">Lives: 3</span>
+      </span>
+    </row>
+    <!-- --------------- MENU INICIO DEL JUEGO ---------------- -->
+    <div id="menuInicio">
+      <h1>NUEVA PARTIDA</h1>
+      <h2> - Controles - </h2>
+      <h3>
+        <li>Ocultar/Mostrar Ayuda - "H"</li>
+        <li>Izquierda - "A / LEFT ARROW"</li>
+        <li>Derecha - "D / RIGTH ARROW"</li>
+      </h3>
+      <br><br>
+      <button id="start-game-button" class="button">COMENZAR JUEGO</button>
     </div>
-  </header>
-
-  <!-- Contenedor para la pantalla de carga y logo -->
-  <div id="lyr_loading">
-    <div id="lyr_loading_background"></div>
-    <div id="lyr_loading_logo" class="ui_logo"></div>
+    <!-- --------------- MENU AYUDA ---------------- -->
+    <div id="menuAyuda">
+      <h1>CONTROLES</h1>
+      <h2>
+        <li>Ocultar/Mostrar Ayuda - "H"</li>
+        <li>Izquierda - "A / LEFT ARROW"</li>
+        <li>Derecha - "D / RIGTH ARROW"</li>
+      </h2>
+    </div>
+    <div id="pause">
+      <h1>PAUSE</h1>
+    </div>
+    <!-- Contenedor para el resto de la aplicación -->
+    <div id="WebGL-output"></div>
   </div>
 
-  <!-- Este boton esta asociado a la funcion start parra lanzar toda la escena -->
-  <!-- <button onclick="start()">
-  Comenzar el juego
-</button> -->
-
-  <!-- --------------- MENU INICIO DEL JUEGO ---------------- -->
-  <div id="menuInicio">
-    <h1>Menu Principal</h1>
-    <h2> - Controles - </h2>
-    <h3>
-      <li>Ayuda - "H"</li>
-      <li>Izquierda - "A / LEFT ARROW"</li>
-      <li>Derecha - "D / RIGTH ARROW"</li>
-    </h3>
-    <h2> - PULSA ESPACIO PARA COMENZAR -</h2>
+  <div id="loading-screen">
+    <span id="loading_logo" class="ui_logo"></span>
+    <div class="loader"></div>
   </div>
-
-  <!-- --------------- MENU INICIO DEL JUEGO ---------------- -->
-  <div id="menuAyuda">
-    <h1> - Controles - </h1>
-    <h2>
-      <li>Abrir/Cerrar Ayuda - "H"</li>
-      <li>Izquierda - "A / LEFT ARROW"</li>
-      <li>Derecha - "D / RIGTH ARROW"</li>
-    </h2>
-  </div>
-
-  <!-- Contenedor para el resto de la aplicación -->
-  <div id="WebGL-output">
-  </div>
-
 </body>
 
 </html>

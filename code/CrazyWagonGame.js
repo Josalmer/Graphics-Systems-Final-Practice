@@ -67,13 +67,13 @@ class CrazyWagonGame extends THREE.Object3D {
       minimumTime: 15 * 1000,     // 20 segundos una vuelta
       deltaTime: _deltaTime,
       currentTime: _initialTime + _deltaTime,
-      lapNumber: 0,
+      lapNumber: -1,
       t_prev: 99,
       timeNewLap: Date.now(),
       gameStartedAt: null,
       obstaclesLoaded: 0,
       nObstacles: 45,
-      nballoons: 50,
+      nballoons: 30,
       playerScore: 0,
       ballonsDeleted: 0,
       lives: 3
@@ -92,7 +92,10 @@ class CrazyWagonGame extends THREE.Object3D {
   countObstacleLoaded() {
     this.gameData.obstaclesLoaded++;
     if (this.gameData.obstaclesLoaded == this.gameData.nObstacles) {
-      document.getElementById("lyr_loading").style.display = "none";
+      setTimeout(() => {  
+        document.getElementById("game").style.display = "block";
+        document.getElementById("loading-screen").style.display = "none";
+      }, 2000);
     }
   }
 
@@ -162,7 +165,7 @@ class CrazyWagonGame extends THREE.Object3D {
     if (this.gameData.t_prev > t) {
       // nueva vuelta     
       this.gameData.lapNumber += 1;
-      document.getElementById ("Laps").innerHTML = "<h2>Laps: "+this.gameData.lapNumber+"</h2>";
+      document.getElementById("laps").textContent = "Laps: " + this.gameData.lapNumber;
 
       if (this.gameData.currentTime - this.gameData.deltaTime >= this.gameData.minimumTime) {
         this.gameData.currentTime -= this.gameData.deltaTime;
