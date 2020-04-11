@@ -205,15 +205,15 @@ class MyScene extends THREE.Scene {
     var raycaster = new THREE.Raycaster();
     raycaster.setFromCamera(this.mousePosition, this.getCamera());  
 
-    var pickedObject = null;
+    var pickedObjects = null;
 
     console.log(this.raycasterBalloonsList);
-    var intersectedObjects = raycaster.intersectObjects(this.raycasterBalloonsList);
+    var intersectedObjects = raycaster.intersectObjects(this.children, true);
 
     console.log(intersectedObjects);
     if(intersectedObjects.length > 0){
       pickedObjects = intersectedObjects[0].object;
-      pickedObjects.ball.scale.set(10,10,10);
+      pickedObjects.scale.set(10,10,10);
     }
 
     console.log(this.mousePosition); 
