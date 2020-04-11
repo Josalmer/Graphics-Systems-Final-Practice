@@ -21,10 +21,12 @@ class MyScene extends THREE.Scene {
     this.environment = new Environment();
     this.add(this.environment);
 
-    // this.collidableMeshList = [];
-    // for (let i = 0; i < this.game.balloons.children.length; i++) {
-    //   this.collidableMeshList.push(this.game.getBallonAtIndex(i));
-    // }
+
+    this.mousePosition = new THREE.Vector2();
+    this.raycasterBalloonsList = [];
+    for (let i = 0; i < this.game.balloons.children.length; i++) {
+      this.raycasterBalloonsList.push(this.game.getBallonAtIndex(i));
+    }
   }
 
 
@@ -121,9 +123,10 @@ class MyScene extends THREE.Scene {
     }
   }
 
-  mouseClick() {
-    console.log(this.game.balloons);
-    this.CheckRayCasting();
+  onMouseDown (event) { 
+    if (event.button == 0) {   // Left button
+      this.checkRayPicking();
+    }
   }
 
   //Funcion para controlar la entrada de teclado
@@ -172,10 +175,6 @@ class MyScene extends THREE.Scene {
     document.getElementById("score").textContent = "Crono: " + Math.trunc(this.game.gameData.playerScore) + ' points';
   }
 
-  updateScore() {
-
-  }
-
   update() {
     requestAnimationFrame(() => this.update())
     this.spotLight.intensity = this.interfaceData.lightIntensity;
@@ -184,7 +183,6 @@ class MyScene extends THREE.Scene {
     this.cameraControl.update();
 
     if (this.interfaceData.animate) {
-      console.log(this);
       this.game.update();
       this.updateStats();
       // this.CheckCollision();
@@ -198,8 +196,28 @@ class MyScene extends THREE.Scene {
   // INTERACTION //
   ///////////////////////////////////////////////////////////////////////////
 
-  CheckRayCasting() {
-    console.log("clicked")
+  checkRayPicking() {
+   //Calculo de la posicion (x,y) del click del raton
+    this.mousePosition.x = (event.clientX / window.innerWidth)* 2 - 1; //Multiplico por 100 para que cuadre con la pos de los objetos
+    this.mousePosition.y = (event.clientY / window.innerHeight)* 2 + 1;
+
+    //Crea un rayo que parte de la camara y pasa por la posicion donde se ha clickado
+    var raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(this.mousePosition, this.getCamera());  
+
+    var pickedObject = null;
+
+    console.log(this.raycasterBalloonsList);
+    var intersectedObjects = raycaster.intersectObjects(this.raycasterBalloonsList);
+
+    console.log(intersectedObjects);
+    if(intersectedObjects.length > 0){
+      pickedObjects = intersectedObjects[0].object;
+      pickedObjects.ball.scale.set(10,10,10);
+    }
+
+    console.log(this.mousePosition); 
+
   }
 
   CheckCollision() {
@@ -232,6 +250,8 @@ $(function () {
   window.addEventListener("resize", () => scene.onWindowResize());
   //Llamada a la funcion que controla las entradas del teclado
   window.addEventListener("keydown", () => scene.setupKeyControls());
+
+  window.addEventListener ("mousedown", (event) => scene.onMouseDown(event), true);
 
   scene.update();
 });
