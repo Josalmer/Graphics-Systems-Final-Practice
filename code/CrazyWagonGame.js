@@ -70,11 +70,13 @@ class CrazyWagonGame extends THREE.Object3D {
       lapNumber: 0,
       t_prev: 99,
       timeNewLap: Date.now(),
-      gameRunning: false,
       gameStartedAt: null,
       obstaclesLoaded: 0,
       nObstacles: 45,
-      nballoons: 50
+      nballoons: 50,
+      playerScore: 0,
+      ballonsDeleted: 0,
+      lives: 3
     };
     return gameData;
   }

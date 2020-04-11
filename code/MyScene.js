@@ -21,10 +21,10 @@ class MyScene extends THREE.Scene {
     this.environment = new Environment();
     this.add(this.environment);
 
-    // this.collidableMeshList = [];
-    // for (let i = 0; i < this.game.obstacles.children.length; i++) {
-    //   this.collidableMeshList.push(this.game.obstacles.children[i]);
-    // }
+    this.collidableMeshList = [];
+    for (let i = 0; i < this.game.balloons.children.length; i++) {
+      this.collidableMeshList.push(this.game.getBallonAtIndex(i));
+    }
   }
 
 
@@ -103,23 +103,26 @@ class MyScene extends THREE.Scene {
     this.interfaceData.animate = !this.interfaceData.animate;
   }
 
-  showHideHelp() {
+  toggleHelp() {
     this.interfaceData.showHelpMenu = !this.interfaceData.showHelpMenu;
     document.getElementById("menuAyuda").style.display = this.interfaceData.showHelpMenu ? "none" : "block";
   }
 
   startGame() {
-    document.getElementById("menuInicio").style.display = "none";
-    document.getElementById("main-header").style.display = "block";
-    this.interfaceData.showInitMenu = false;
-    this.interfaceData.showHeader = true;
-    if(this.game.gameData.gameRunning == false){
+    if (this.game.gameData.gameStartedAt == null) {
+      document.getElementById("menuInicio").style.display = "none";
+      document.getElementById("main-header").style.display = "block";
+      this.interfaceData.showInitMenu = false;
+      this.interfaceData.showHeader = true;
       this.game.gameData.gameStartedAt = new Date();
+      this.interfaceData.animate = true;
+      this.interfaceData.wagonCamera = true;
     }
-    this.game.gameData.gameRunning = true;
-    this.interfaceData.animate = true;
-    this.interfaceData.wagonCamera = true;
-    
+  }
+
+  mouseClick() {
+    console.log(this.game.balloons);
+    this.CheckRayCasting();
   }
 
   //Funcion para controlar la entrada de teclado
@@ -134,7 +137,7 @@ class MyScene extends THREE.Scene {
           that.game.turnLeft();
           break;
         case 72: //Tecla H - Help
-          that.showHideHelp();
+          that.toggleHelp();
           break;
         case 32: //espacio
           that.startGame();
@@ -166,6 +169,10 @@ class MyScene extends THREE.Scene {
     document.getElementById("Milliseconds").innerHTML = "<h2>" + this.miliseconds + "</h2>";
   }
 
+  updateScore() {
+
+  }
+
   update() {
     requestAnimationFrame(() => this.update())
     this.spotLight.intensity = this.interfaceData.lightIntensity;
@@ -174,6 +181,7 @@ class MyScene extends THREE.Scene {
     this.cameraControl.update();
 
     if (this.interfaceData.animate) {
+      console.log(this);
       this.game.update();
       this.updateCrono();
       // this.CheckCollision();
@@ -186,6 +194,10 @@ class MyScene extends THREE.Scene {
   ///////////////////////////////////////////////////////////////////////////
   // INTERACTION //
   ///////////////////////////////////////////////////////////////////////////
+
+  CheckRayCasting() {
+    console.log("clicked")
+  }
 
   CheckCollision() {
     var wagon = this.game.wagon;
