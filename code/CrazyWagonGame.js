@@ -1,8 +1,8 @@
 class CrazyWagonGame extends THREE.Object3D {
-  constructor() {
+  constructor(level) {
     super();
 
-    this.gameData = this.initData();
+    this.gameData = this.initData(level);
 
     this.spline = this.createSpline();
 
@@ -58,12 +58,13 @@ class CrazyWagonGame extends THREE.Object3D {
     return spline;
   }
 
-  initData() {
-    var _initialTime = 45 * 1000; // 45 segundos una vuelta
-    var _deltaTime = 10 * 1000;    // 10 segundos se recorta cada vuelta
+  initData(level) {
+    var _initialTime = (55 - (10 * level)) * 1000; // 45 easy, 40 medium, 35 hard
+    var _deltaTime = 5 * 1000;    // se recorta cada vuelta 5 seconds
     var gameData = {
+      level: level,
       initialTime: _initialTime,
-      minimumTime: 15 * 1000,     // 20 segundos una vuelta
+      minimumTime: 20 * 1000,     // 20 segundos una vuelta
       deltaTime: _deltaTime,
       currentTime: _initialTime + _deltaTime,
       lapNumber: -1,
@@ -71,7 +72,7 @@ class CrazyWagonGame extends THREE.Object3D {
       timeNewLap: Date.now(),
       gameStartedAt: null,
       obstaclesLoaded: 0,
-      nObstacles: 35,
+      nObstacles: 20 * level,
       nballoons: 20,
       playerScore: 0,
       ballonsDeleted: 0,
@@ -206,7 +207,7 @@ class CrazyWagonGame extends THREE.Object3D {
   moveballoons() {
     for (let i = 0; i < this.balloons.length; i++) {
       let ballon = this.getBallonAtIndex(i);
-      let veloc = i * 0.015;
+      let veloc = (2 + i) * 0.007 * this.gameData.level;
       if (ballon.subiendo) {
         if (ballon.position.y < 40) {
           ballon.position.y += veloc;

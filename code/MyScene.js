@@ -1,7 +1,7 @@
 // Jose Saldaña Y Alberto Rodriguez
 
 class MyScene extends THREE.Scene {
-  constructor(myCanvas) {
+  constructor(myCanvas, level) {
     super();
 
     this.interfaceData = this.InterfaceData();
@@ -15,7 +15,7 @@ class MyScene extends THREE.Scene {
     this.axis = new THREE.AxesHelper(10);
     this.add(this.axis);
 
-    this.game = new CrazyWagonGame();
+    this.game = new CrazyWagonGame(level);
     this.add(this.game);
 
     this.environment = new Environment();
@@ -166,7 +166,7 @@ class MyScene extends THREE.Scene {
   }
 
   updateScore() {
-    this.game.gameData.playerScore += 0.1 * (this.game.gameData.lapNumber + 1);
+    this.game.gameData.playerScore += 0.1 * (this.game.gameData.lapNumber + 1) * this.game.gameData.level;
     document.getElementById("score").textContent = "Score: " + Math.trunc(this.game.gameData.playerScore) + ' points';
   }
 
@@ -192,7 +192,7 @@ class MyScene extends THREE.Scene {
   ///////////////////////////////////////////////////////////////////////////
 
   updateStatAfterPickingBalloon() {
-    this.game.gameData.playerScore += 100 * (this.game.gameData.lapNumber + 1);
+    this.game.gameData.playerScore += 100 * this.game.gameData.level;
     this.game.gameData.ballonsDeleted++;
     document.getElementById("balloons").textContent = 'Balloons destroyed: ' + this.game.gameData.ballonsDeleted + ' / ' + this.game.gameData.nballoons;
   }
@@ -220,7 +220,7 @@ class MyScene extends THREE.Scene {
       pickedObject.material = material1;
       setTimeout(() => {
         pickedObject.material = material2;
-      }, 2000);
+      }, 1000);
     }
   }
 
@@ -243,18 +243,40 @@ class MyScene extends THREE.Scene {
 }
 
 $(function () {
-  var scene = new MyScene("#WebGL-output");
 
-  var startButton = document.getElementById('start-game-button');
-  startButton.onclick = function StartAnimation() {
-    scene.startGame();
+  function start(level) {
+    document.getElementById("selectDifficult").style.display = 'none';
+    document.getElementById("spinner").style.display = 'block';
+  
+    var scene = new MyScene("#WebGL-output", level);
+  
+    var startButton = document.getElementById('start-game-button');
+    startButton.onclick = function StartAnimation() {
+      scene.startGame();
+    }
+  
+    window.addEventListener("resize", () => scene.onWindowResize());
+    //Llamada a la funcion que controla las entradas del teclado
+    window.addEventListener("keydown", () => scene.setupKeyControls());
+    window.addEventListener("mousedown", (event) => scene.onMouseDown(event), true);
+    scene.update();
   }
 
-  window.addEventListener("resize", () => scene.onWindowResize());
-  //Llamada a la funcion que controla las entradas del teclado
-  window.addEventListener("keydown", () => scene.setupKeyControls());
+  var easyButton = document.getElementById('easy-button');
+  easyButton.onclick = function () {
+    console.log("Loading game: Easy level");
+    start(1);
+  }
 
-  window.addEventListener ("mousedown", (event) => scene.onMouseDown(event), true);
+  var mediumButton = document.getElementById('medium-button');
+  mediumButton.onclick = function () {
+    console.log("Loading game: Medium level");
+    start(1.5);
+  }
 
-  scene.update();
+  var hardButton = document.getElementById('hard-button');
+  hardButton.onclick = function () {
+    console.log("Loading game: Hard level");
+    start(2);
+  }
 });

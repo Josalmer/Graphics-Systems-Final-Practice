@@ -8,7 +8,6 @@
   <link rel="stylesheet" type="text/css" href="ui.css" />
   <script type="text/javascript" src="./libs/three.js"></script>
   <script type="text/javascript" src="./libs/jquery.js"></script>
-  <script type="text/javascript" src="./libs/dat.gui.js"></script>
   <script type="text/javascript" src="./libs/Octree.js"></script>
   <script type="text/javascript" src="./libs/TrackballControls.js"></script>
   <script type="text/javascript" src="./libs/MTLLoader.js"></script>
@@ -42,7 +41,7 @@
         <li>Rotate right - "D / RIGTH ARROW"</li>
       </h3>
       <br><br>
-      <button id="start-game-button" class="button">NEW GAME</button>
+      <button id="start-game-button" class="button">START GAME</button>
     </div>
     <!-- --------------- MENU AYUDA ---------------- -->
     <div id="menuAyuda">
@@ -61,7 +60,19 @@
 
   <div id="loading-screen">
     <span id="loading_logo" class="ui_logo"></span>
-    <div class="loader"></div>
+    <div id="selectDifficult">
+      <h1>SELECT LEVEL</h1>
+      <h2>
+        <button id="easy-button" class="button2">EASY</button>
+      </h2>
+      <h2>
+        <button id="medium-button" class="button2">MEDIUM</button>
+      </h2>
+      <h2>
+        <button id="hard-button" class="button2">HARD</button>
+      </h2>
+    </div>
+    <div id="spinner" class="loader"></div>
   </div>
 </body>
 
