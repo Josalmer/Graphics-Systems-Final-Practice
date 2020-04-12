@@ -59,8 +59,8 @@ class CrazyWagonGame extends THREE.Object3D {
   }
 
   initData(level) {
-    var _initialTime = (55 - (10 * level)) * 1000; // 45 easy, 40 medium, 35 hard
-    var _deltaTime = 5 * 1000;    // se recorta cada vuelta 5 seconds
+    var _initialTime = (49 - (4 * level)) * 1000; // 45 easy, 43 medium, 41 hard
+    var _deltaTime = 2.5 * 1000;    // se recorta cada vuelta 2.5 seconds
     var gameData = {
       level: level,
       initialTime: _initialTime,
@@ -245,15 +245,15 @@ class CrazyWagonGame extends THREE.Object3D {
   ///////////////////////////////////////////////////////////////////////////
 
   turnRight() {
-    this.wagon.wagonModel.rotation.z -= 0.05;
-    this.wagon.wagonCam.rotation.z -= 0.05;
-    this.wagon.collisionsModel.rotation.z -= 0.05;
+    this.wagon.wagonModel.rotation.z -= 0.07;
+    this.wagon.wagonCam.rotation.z -= 0.07;
+    this.wagon.collisionsModel.rotation.z -= 0.07;
   }
 
   turnLeft() {
-    this.wagon.wagonModel.rotation.z += 0.05;
-    this.wagon.wagonCam.rotation.z += 0.05;
-    this.wagon.collisionsModel.rotation.z += 0.05;
+    this.wagon.wagonModel.rotation.z += 0.07;
+    this.wagon.wagonCam.rotation.z += 0.07;
+    this.wagon.collisionsModel.rotation.z += 0.07;
   }
 
   ///////////////////////////////////////////////////////////////////////////

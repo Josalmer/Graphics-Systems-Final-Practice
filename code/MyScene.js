@@ -198,7 +198,6 @@ class MyScene extends THREE.Scene {
   }
 
   checkRayPicking(event) {
-    var that = this;
     var mousePosition = new THREE.Vector2();
     //Calculo de la posicion (x,y) del click del raton
     mousePosition.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -261,6 +260,12 @@ $(function () {
     window.addEventListener("mousedown", (event) => scene.onMouseDown(event), true);
     scene.update();
   }
+
+  setTimeout(() => {
+    document.getElementById("welcome").style.display = 'none';
+    document.getElementById("spinner").style.display = 'none';
+    document.getElementById("selectDifficult").style.display = 'block';
+  }, 5000);
 
   var easyButton = document.getElementById('easy-button');
   easyButton.onclick = function () {

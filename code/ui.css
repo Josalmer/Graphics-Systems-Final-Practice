@@ -137,7 +137,6 @@ body {
   height: 300px;
 }
 .loader {
-  display: none;
   position: absolute;
   bottom: 50%;
   left: calc(50% - 25px);
@@ -153,6 +152,7 @@ body {
   100% { transform: rotate(360deg); }
 }
 #selectDifficult {
+  display: none;
   font-style: italic;
   font-weight: bold;
   position: absolute;
@@ -163,7 +163,6 @@ body {
   margin-left: 40%;
   background-color: rgb(0, 0, 0, 0.6);
   border-radius: 5px;
-  display: block;
   color: white;
   box-shadow: black 1px 1px 5px;
 }
@@ -178,4 +177,17 @@ body {
   text-decoration: none;
   display: inline-block;
   font-size: 22px;
+}
+#welcome {
+  font-style: italic;
+  font-weight: bolder;
+  position: absolute;
+  text-align: center;
+  height: 310px;
+  width: 50%;
+  margin-top: 500px;
+  margin-left: 25%;
+  display: block;
+  color: white;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
 }
