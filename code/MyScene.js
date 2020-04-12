@@ -50,6 +50,7 @@ class MyScene extends THREE.Scene {
     this.cameraControl.zoomSpeed = -2;
     this.cameraControl.panSpeed = 0.5;
     this.cameraControl.target = look;
+    this.cameraControl.enabled = true;
   }
 
   createLights() {
@@ -90,11 +91,11 @@ class MyScene extends THREE.Scene {
   // CONTROLS //
   ///////////////////////////////////////////////////////////////////////////
 
-  toggleView(){
+  toggleView() {
     this.interfaceData.wagonCamera = !this.interfaceData.wagonCamera;
   }
 
-  toggleAnimation(){
+  toggleAnimation() {
     this.interfaceData.animate = !this.interfaceData.animate;
     document.getElementById("pause").style.display = this.interfaceData.animate ? 'none' : 'block';
   }
@@ -117,7 +118,7 @@ class MyScene extends THREE.Scene {
     }
   }
 
-  onMouseDown (event) { 
+  onMouseDown(event) {
     if (event.button == 0) {   // Left button
       this.checkRayPicking(event);
     }
@@ -159,7 +160,7 @@ class MyScene extends THREE.Scene {
   updateCrono() {
     let ahora = new Date();
     let crono = new Date(ahora - this.game.gameData.gameStartedAt);
-    let output = "Time: "  + crono.getMinutes() + ':' + crono.getSeconds() + ':' + Math.trunc(crono.getMilliseconds() / 10);
+    let output = "Time: " + crono.getMinutes() + ':' + crono.getSeconds() + ':' + Math.trunc(crono.getMilliseconds() / 10);
 
     document.getElementById("crono").textContent = output;
   }
@@ -199,25 +200,25 @@ class MyScene extends THREE.Scene {
   checkRayPicking(event) {
     var that = this;
     var mousePosition = new THREE.Vector2();
-   //Calculo de la posicion (x,y) del click del raton
-    mousePosition.x = (event.clientX / window.innerWidth)* 2 - 1;
+    //Calculo de la posicion (x,y) del click del raton
+    mousePosition.x = (event.clientX / window.innerWidth) * 2 - 1;
     mousePosition.y = 1 - 2 * (event.clientY / window.innerHeight);
 
     //Crea un rayo que parte de la camara y pasa por la posicion donde se ha clickado
     var raycaster = new THREE.Raycaster();
-    raycaster.setFromCamera(mousePosition, this.getCamera());  
+    raycaster.setFromCamera(mousePosition, this.getCamera());
     var intersectedObjects = raycaster.intersectObjects(this.game.balloons);
-    if(intersectedObjects.length > 0){
+    if (intersectedObjects.length > 0) {
 
       this.updateStatAfterPickingBalloon();
 
       // Hide object and make unselectable
       let pickedObject = intersectedObjects[0].object;
       this.game.balloons = this.game.balloons.filter(x => x != pickedObject);
-      var material1 = new THREE.MeshBasicMaterial( {color: 0xff0000} );
-      var material2 = new THREE.MeshBasicMaterial( {color: 0x000000, transparent: true, opacity: 0} );
+      var material1 = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+      var material2 = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0 });
       pickedObject.material = material1;
-      setTimeout(() => {  
+      setTimeout(() => {
         pickedObject.material = material2;
       }, 2000);
     }
@@ -227,25 +228,24 @@ class MyScene extends THREE.Scene {
     var wagon = this.game.wagon;
     var mesh = wagon.collisionsModel.children[0];
     var originPoint = wagon.position.clone();
-    for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++)
-    {		
+    for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++) {
       var localVertex = mesh.geometry.vertices[vertexIndex].clone();
-      var globalVertex = localVertex.applyMatrix4( mesh.matrix );
-      var directionVector = globalVertex.sub( wagon.position );
+      var globalVertex = localVertex.applyMatrix4(mesh.matrix);
+      var directionVector = globalVertex.sub(wagon.position);
 
-      var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
-      var collisionResults = ray.intersectObjects( this.collidableMeshList );
-      if ( collisionResults.length > 0) {
+      var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
+      var collisionResults = ray.intersectObjects(this.collidableMeshList);
+      if (collisionResults.length > 0) {
         console.log("Collision");
       }
-    }	
+    }
   }
 }
 
 $(function () {
   var scene = new MyScene("#WebGL-output");
 
-  var startButton = document.getElementById( 'start-game-button' );
+  var startButton = document.getElementById('start-game-button');
   startButton.onclick = function StartAnimation() {
     scene.startGame();
   }

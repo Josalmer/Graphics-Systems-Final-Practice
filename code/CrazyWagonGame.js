@@ -100,20 +100,20 @@ class CrazyWagonGame extends THREE.Object3D {
 
   createBalloons() {
     var positions = [
-      new THREE.Vector3(10, 10, 10), new THREE.Vector3(-10, 15, 10),
-      new THREE.Vector3(10, 20, -10), new THREE.Vector3(-10, 25, -10),
-      new THREE.Vector3(20, 30, 20), new THREE.Vector3(-20, 35, 20),
-      new THREE.Vector3(20, 40, -20), new THREE.Vector3(-20, 45, -20),
-      new THREE.Vector3(30, 50, 30), new THREE.Vector3(-30, 55, 30),
-      new THREE.Vector3(30, 60, -30), new THREE.Vector3(-30, 55, -30),
-      new THREE.Vector3(40, 50, 40), new THREE.Vector3(-40, 45, 40),
-      new THREE.Vector3(40, 40, -40), new THREE.Vector3(-40, 35, -40),
-      new THREE.Vector3(50, 30, 50), new THREE.Vector3(-50, 25, 50),
-      new THREE.Vector3(50, 20, -50), new THREE.Vector3(-50, 15, -50)
+      new THREE.Vector3(10, 10, 15), new THREE.Vector3(-10, 15, 0),
+      new THREE.Vector3(0, 20, -10), new THREE.Vector3(-10, 25, -10),
+      new THREE.Vector3(24, 30, 10), new THREE.Vector3(-20, 35, 20),
+      new THREE.Vector3(17, 35, -20), new THREE.Vector3(-18, 35, -18),
+      new THREE.Vector3(23, 30, 20), new THREE.Vector3(-20, 25, 30),
+      new THREE.Vector3(-10, 20, -24), new THREE.Vector3(-30, 15, -30),
+      new THREE.Vector3(13, 10, 46), new THREE.Vector3(-18, 15, 40),
+      new THREE.Vector3(10, 20, -30), new THREE.Vector3(15, 25, 15),
+      new THREE.Vector3(10, 30, 34), new THREE.Vector3(-30, 35, 0),
+      new THREE.Vector3(0, 35, -35), new THREE.Vector3(-20, 35, 0)
     ]
     var balloons = [];
     for (let i = 0; i < this.gameData.nballoons; i++) {
-      let radio = Math.floor(this.getRandom(1, 3));
+      let radio = Math.floor(this.getRandom(0.8, 2));
       let newBalloon = this.createBalloon(radio);
       newBalloon.position.copy(positions[i]);
       balloons.push(newBalloon);
@@ -208,14 +208,14 @@ class CrazyWagonGame extends THREE.Object3D {
       let ballon = this.getBallonAtIndex(i);
       let veloc = i * 0.015;
       if (ballon.subiendo) {
-        if (ballon.position.y < 70) {
+        if (ballon.position.y < 40) {
           ballon.position.y += veloc;
         } else {
           ballon.subiendo = false;
           ballon.position.y -= veloc;
         }
       } else {
-        if (ballon.position.y > 4) {
+        if (ballon.position.y > 5) {
           ballon.position.y -= veloc;
         } else {
           ballon.subiendo = true;
