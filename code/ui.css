@@ -85,7 +85,7 @@ body {
 
 .button {
   background-color: blueviolet;
-  border: none;
+  border-radius: 10px;
   color: white;
   padding: 15px 32px;
   font-weight: bold;
@@ -168,7 +168,7 @@ body {
 }
 .button2 {
   background-color: blueviolet;
-  border-radius: 5px;
+  border-radius: 10px;
   color: white;
   width: 150px;
   height: 50px;
