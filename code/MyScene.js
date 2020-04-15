@@ -1,7 +1,7 @@
 // Jose Saldaña Y Alberto Rodriguez
 
 class MyScene extends THREE.Scene {
-  constructor(myCanvas, level) {
+  constructor(myCanvas, level, map) {
     super();
 
     this.interfaceData = this.InterfaceData();
@@ -15,10 +15,10 @@ class MyScene extends THREE.Scene {
     this.axis = new THREE.AxesHelper(10);
     this.add(this.axis);
 
-    this.game = new CrazyWagonGame(level);
+    this.game = new CrazyWagonGame(level, map);
     this.add(this.game);
 
-    this.environment = new Environment();
+    this.environment = new Environment(map);
     this.add(this.environment);
   }
 
@@ -257,7 +257,10 @@ $(function () {
     document.getElementById("selectDifficult").style.display = 'none';
     document.getElementById("spinner").style.display = 'block';
 
-    var scene = new MyScene("#WebGL-output", level);
+    let map = document.getElementById("space-button").checked ? 1 : 2;
+    console.log("Selected map: ", map);
+
+    var scene = new MyScene("#WebGL-output", level, map);
 
     var startButton = document.getElementById('start-game-button');
     startButton.onclick = function StartAnimation() {
@@ -275,7 +278,7 @@ $(function () {
     document.getElementById("welcome").style.display = 'none';
     document.getElementById("spinner").style.display = 'none';
     document.getElementById("selectDifficult").style.display = 'block';
-  }, 5000);
+  }, 3500);
 
   var easyButton = document.getElementById('easy-button');
   easyButton.onclick = function () {
@@ -293,5 +296,17 @@ $(function () {
   hardButton.onclick = function () {
     console.log("Loading game: Hard level");
     start(2);
+  }
+
+  var spaceButton = document.getElementById('space-button');
+  spaceButton.onclick = function () {
+    document.getElementById("space-button").checked = true;
+    document.getElementById("west-button").checked = false;
+  }
+
+  var westButton = document.getElementById('west-button');
+  westButton.onclick = function () {
+    document.getElementById("space-button").checked = false;
+    document.getElementById("west-button").checked = true;
   }
 });
