@@ -144,6 +144,10 @@ class MyScene extends THREE.Scene {
         case 80: //Letra P
           that.toggleAnimation();
           break;
+        case 86: //Letra V
+          console.log(that.game.obstaclesMeshList);
+          console.log(that.game.obstacles);
+          break;
       }
     };
   }
@@ -180,7 +184,7 @@ class MyScene extends THREE.Scene {
     if (this.interfaceData.animate) {
       this.game.update();
       this.updateStats();
-      // this.CheckCollision();
+      this.CheckCollision();
     }
     this.renderer.render(this, this.getCamera());
 
@@ -223,7 +227,33 @@ class MyScene extends THREE.Scene {
     }
   }
 
+  detectCollision(object1, object2) {
+    object1.geometry.computeBoundingBox(); //not needed if its already calculated
+    object2.geometry.computeBoundingBox();
+    object1.updateMatrixWorld();
+    object2.updateMatrixWorld();
+
+    var box1 = object1.geometry.boundingBox.clone();
+    box1.applyMatrix4(object1.matrixWorld);
+
+    var box2 = object2.geometry.boundingBox.clone();
+    box2.applyMatrix4(object2.matrixWorld);
+
+    return box1.intersectsBox(box2);
+  }
+
   CheckCollision() {
+    var wagon = this.game.wagon.collisionsModel.children[0];
+    for (let i = 0; i < this.game.obstaclesMeshList.length; i++) {
+      let collision = this.detectCollision(wagon, this.game.obstaclesMeshList[0]);
+      console.log(collision);
+      if (collision) {
+        console.log("Collision:", i);
+      }
+    }
+  }
+
+  CheckCollisionRay() {
     var wagon = this.game.wagon;
     var mesh = wagon.collisionsModel.children[0];
     var originPoint = wagon.position.clone();
@@ -233,8 +263,8 @@ class MyScene extends THREE.Scene {
       var directionVector = globalVertex.sub(wagon.position);
 
       var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-      var collisionResults = ray.intersectObjects(this.collidableMeshList);
-      if (collisionResults.length > 0) {
+      var collisionResults = ray.intersectObjects(this.game.obstaclesMeshList);
+      if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
         console.log("Collision");
       }
     }
@@ -246,14 +276,14 @@ $(function () {
   function start(level) {
     document.getElementById("selectDifficult").style.display = 'none';
     document.getElementById("spinner").style.display = 'block';
-  
+
     var scene = new MyScene("#WebGL-output", level);
-  
+
     var startButton = document.getElementById('start-game-button');
     startButton.onclick = function StartAnimation() {
       scene.startGame();
     }
-  
+
     window.addEventListener("resize", () => scene.onWindowResize());
     //Llamada a la funcion que controla las entradas del teclado
     window.addEventListener("keydown", () => scene.setupKeyControls());
@@ -265,7 +295,7 @@ $(function () {
     document.getElementById("welcome").style.display = 'none';
     document.getElementById("spinner").style.display = 'none';
     document.getElementById("selectDifficult").style.display = 'block';
-  }, 5000);
+  }, 500);
 
   var easyButton = document.getElementById('easy-button');
   easyButton.onclick = function () {

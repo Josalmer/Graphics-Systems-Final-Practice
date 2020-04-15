@@ -40,7 +40,7 @@ class Obstacle extends THREE.Object3D {
   createCollisionsModel() {
     var collisions = new THREE.Object3D();
     var geometry = new THREE.CubeGeometry(0.48, 1.2, 0.48);
-    var material = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0 });
+    var material = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: false });
     var cube = new THREE.Mesh(geometry, material);
     cube.position.y = 1.275;
     cube.position.z = 0.05;

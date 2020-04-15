@@ -58,7 +58,7 @@ class Wagon extends THREE.Object3D {
   createCollisionsModel() {
     var collisions = new THREE.Object3D();
     var geometry = new THREE.CubeGeometry( 0.85, 0.85, 2.83);
-    var material = new THREE.MeshBasicMaterial( {color: 0xffff00, transparent: true, opacity: 0} );
+    var material = new THREE.MeshBasicMaterial( {color: 0xffff00, transparent: false} );
     var box = new THREE.Mesh( geometry, material );
     box.position.y = 1.4;
     box.position.z = 0.04;

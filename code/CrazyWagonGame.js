@@ -37,10 +37,12 @@ class CrazyWagonGame extends THREE.Object3D {
     this.wagon = new Wagon();
     this.add(this.wagon);
 
-    this.obstacles = this.createObstacles()
+    this.obstacles = this.createObstacles();
     this.add(this.obstacles);
 
     this.balloons = this.createBalloons();
+
+    this.obstaclesMeshList = this.getObstaclesMeshs();
   }
 
   createSpline() {
@@ -87,6 +89,14 @@ class CrazyWagonGame extends THREE.Object3D {
       obstacles.add(new Obstacle(Math.trunc(this.getRandom(0, 6)), this));
     }
     return obstacles;
+  }
+
+  getObstaclesMeshs() {
+    var meshs = [];
+    for (let i = 0; i < this.obstacles.children.length; i++) {
+      meshs.push(this.getObstacleAtIndex(i).collisionsModel.children[0]);
+    }
+    return meshs;
   }
 
   countObstacleLoaded() {
