@@ -188,7 +188,7 @@ class MyScene extends THREE.Scene {
     if (this.interfaceData.animate) {
       this.game.update();
       this.updateStats();
-      // this.CheckCollision();
+      this.CheckCollisionBox();
       // this.CheckCollisionRay();
     }
     this.renderer.render(this, this.getCamera());
@@ -233,24 +233,24 @@ class MyScene extends THREE.Scene {
   }
 
   detectCollision(object1, object2) {
-    object1.geometry.computeBoundingBox(); //not needed if its already calculated
-    object2.geometry.computeBoundingBox();
+    object1.geometry.computeBoundingSphere(); //not needed if its already calculated
+    object2.geometry.computeBoundingSphere();
     object1.updateMatrixWorld();
     object2.updateMatrixWorld();
 
-    var box1 = object1.geometry.boundingBox.clone();
+    var box1 = object1.geometry.boundingSphere.clone();
     box1.applyMatrix4(object1.matrixWorld);
 
-    var box2 = object2.geometry.boundingBox.clone();
+    var box2 = object2.geometry.boundingSphere.clone();
     box2.applyMatrix4(object2.matrixWorld);
     
-    if (box1.intersectsBox(box2)) {
+    if (box1.intersectsSphere(box2)) {
       debugger
     }
-    return box1.intersectsBox(box2);
+    return box1.intersectsSphere(box2);
   }
 
-  CheckCollision() {
+  CheckCollisionBox() {
     var wagon = this.game.wagon.collidableBox.children[0];
     for (let i = 0; i < this.game.obstacles.children.length; i++) {
       if (this.detectCollision(wagon, this.game.getObstacleCollidableMeshAtIndex(i))) {
