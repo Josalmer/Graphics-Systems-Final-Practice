@@ -4,8 +4,8 @@ class Wagon extends THREE.Object3D {
     this.wagonModel = this.createWagonModel();
     this.add(this.wagonModel);
 
-    this.collisionsModel = this.createCollisionsModel();
-    this.add(this.collisionsModel);
+    this.collidableBox = this.createCollidableBox();
+    this.add(this.collidableBox);
 
     this.wagonCam = this.createWagonCam();
     this.add(this.wagonCam);
@@ -55,7 +55,7 @@ class Wagon extends THREE.Object3D {
     return camera;
   }
 
-  createCollisionsModel() {
+  createCollidableBox() {
     var collisions = new THREE.Object3D();
     var geometry = new THREE.CubeGeometry( 0.85, 0.85, 2.83);
     var material = new THREE.MeshBasicMaterial( {color: 0xffff00, transparent: false} );

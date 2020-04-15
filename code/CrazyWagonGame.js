@@ -26,6 +26,10 @@ class CrazyWagonGame extends THREE.Object3D {
     return this.obstacles.children[index];
   }
 
+  getObstacleCollidableMeshAtIndex(index) {
+    return this.obstacles.children[index].collidableBox.children[0];
+  }
+
   ///////////////////////////////////////////////////////////////////////////
   // BUILD AND LOAD FUNCTIONS //
   ///////////////////////////////////////////////////////////////////////////
@@ -41,8 +45,6 @@ class CrazyWagonGame extends THREE.Object3D {
     this.add(this.obstacles);
 
     this.balloons = this.createBalloons();
-
-    this.obstaclesMeshList = this.getObstaclesMeshs();
   }
 
   createSpline() {
@@ -94,7 +96,7 @@ class CrazyWagonGame extends THREE.Object3D {
   getObstaclesMeshs() {
     var meshs = [];
     for (let i = 0; i < this.obstacles.children.length; i++) {
-      meshs.push(this.getObstacleAtIndex(i).collisionsModel.children[0]);
+      meshs.push(this.getObstacleAtIndex(i).collidableBox.children[0]);
     }
     return meshs;
   }
@@ -152,7 +154,7 @@ class CrazyWagonGame extends THREE.Object3D {
     });
 
     for (let i = 0; i < this.obstacles.children.length; i++) {
-      this.octree.add(this.getObstacleAtIndex(i).collisionsModel.children[0]);
+      this.octree.add(this.getObstacleAtIndex(i).collidableBox.children[0]);
     }
 
     return this.octree;
@@ -164,7 +166,7 @@ class CrazyWagonGame extends THREE.Object3D {
     // posicionar obstaculos
     let n_obstacles = this.obstacles.children.length;
     for (let i = 0; i < n_obstacles; i++) {
-      this.placeObjectOnLine(this.getObstacleAtIndex(i), i / n_obstacles, this.getRandom(0, 2 * Math.PI));
+      this.placeObjectOnLine(this.getObstacleAtIndex(i), i / n_obstacles);
     }
   }
 
@@ -176,7 +178,7 @@ class CrazyWagonGame extends THREE.Object3D {
     obj.lookAt(p); // ponemos al objeto mirando hacia la tangente
     if (rotation != 0) {
       obj.model.rotation.z = rotation;
-      obj.collisionsModel.rotation.z = rotation;
+      obj.collidableBox.rotation.z = rotation;
     }
   }
 
@@ -257,13 +259,13 @@ class CrazyWagonGame extends THREE.Object3D {
   turnRight() {
     this.wagon.wagonModel.rotation.z -= 0.07;
     this.wagon.wagonCam.rotation.z -= 0.07;
-    this.wagon.collisionsModel.rotation.z -= 0.07;
+    this.wagon.collidableBox.rotation.z -= 0.07;
   }
 
   turnLeft() {
     this.wagon.wagonModel.rotation.z += 0.07;
     this.wagon.wagonCam.rotation.z += 0.07;
-    this.wagon.collisionsModel.rotation.z += 0.07;
+    this.wagon.collidableBox.rotation.z += 0.07;
   }
 
   ///////////////////////////////////////////////////////////////////////////

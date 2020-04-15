@@ -4,8 +4,8 @@ class Obstacle extends THREE.Object3D {
     this.model = this.createObstacle(type, game);
     this.add(this.model);
 
-    this.collisionsModel = this.createCollisionsModel();
-    this.add(this.collisionsModel);
+    this.collidableBox = this.createCollidableBox();
+    this.add(this.collidableBox);
   }
 
   createObstacle(type, game) {
@@ -37,7 +37,7 @@ class Obstacle extends THREE.Object3D {
     return model;
   }
 
-  createCollisionsModel() {
+  createCollidableBox() {
     var collisions = new THREE.Object3D();
     var geometry = new THREE.CubeGeometry(0.48, 1.2, 0.48);
     var material = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: false });

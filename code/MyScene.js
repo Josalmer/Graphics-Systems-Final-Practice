@@ -20,6 +20,11 @@ class MyScene extends THREE.Scene {
 
     this.environment = new Environment();
     this.add(this.environment);
+
+    this.obstaclesMeshList = [];  
+    for (let i = 0; i < this.game.obstacles.children.length; i++) {
+      this.obstaclesMeshList.push(this.game.getObstacleCollidableMeshAtIndex(i));
+    }
   }
 
 
@@ -145,8 +150,7 @@ class MyScene extends THREE.Scene {
           that.toggleAnimation();
           break;
         case 86: //Letra V
-          console.log(that.game.obstaclesMeshList);
-          console.log(that.game.obstacles);
+          console.log("Imprimir variables de control: ", this);
           break;
       }
     };
@@ -184,7 +188,8 @@ class MyScene extends THREE.Scene {
     if (this.interfaceData.animate) {
       this.game.update();
       this.updateStats();
-      this.CheckCollision();
+      // this.CheckCollision();
+      // this.CheckCollisionRay();
     }
     this.renderer.render(this, this.getCamera());
 
@@ -238,16 +243,17 @@ class MyScene extends THREE.Scene {
 
     var box2 = object2.geometry.boundingBox.clone();
     box2.applyMatrix4(object2.matrixWorld);
-
+    
+    if (box1.intersectsBox(box2)) {
+      debugger
+    }
     return box1.intersectsBox(box2);
   }
 
   CheckCollision() {
-    var wagon = this.game.wagon.collisionsModel.children[0];
-    for (let i = 0; i < this.game.obstaclesMeshList.length; i++) {
-      let collision = this.detectCollision(wagon, this.game.obstaclesMeshList[0]);
-      console.log(collision);
-      if (collision) {
+    var wagon = this.game.wagon.collidableBox.children[0];
+    for (let i = 0; i < this.game.obstacles.children.length; i++) {
+      if (this.detectCollision(wagon, this.game.getObstacleCollidableMeshAtIndex(i))) {
         console.log("Collision:", i);
       }
     }
@@ -255,7 +261,7 @@ class MyScene extends THREE.Scene {
 
   CheckCollisionRay() {
     var wagon = this.game.wagon;
-    var mesh = wagon.collisionsModel.children[0];
+    var mesh = wagon.collidableBox.children[0];
     var originPoint = wagon.position.clone();
     for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++) {
       var localVertex = mesh.geometry.vertices[vertexIndex].clone();
@@ -263,9 +269,10 @@ class MyScene extends THREE.Scene {
       var directionVector = globalVertex.sub(wagon.position);
 
       var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-      var collisionResults = ray.intersectObjects(this.game.obstaclesMeshList);
+      var collisionResults = ray.intersectObjects(this.obstaclesMeshList);
       if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
         console.log("Collision");
+        debugger
       }
     }
   }
