@@ -91,7 +91,9 @@ class CrazyWagonGame extends THREE.Object3D {
       nballoons: 20,
       playerScore: 0,
       ballonsDeleted: 0,
-      lives: 3
+      lives: 3,
+      lastCollision: null,
+      protected: null
     };
     return gameData;
   }

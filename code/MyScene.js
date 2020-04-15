@@ -106,16 +106,17 @@ class MyScene extends THREE.Scene {
   }
 
   startGame() {
-    if (this.game.gameData.gameStartedAt == null) {
-      document.getElementById("menuInicio").style.display = "none";
-      document.getElementById("main-header").style.display = "block";
-      document.getElementById("balloons").textContent = 'Balloons destroyed: 0 / ' + this.game.gameData.nballoons;
-      this.interfaceData.showInitMenu = false;
-      this.interfaceData.showHeader = true;
-      this.game.gameData.gameStartedAt = new Date();
-      this.interfaceData.animate = true;
-      this.interfaceData.wagonCamera = true;
-    }
+    document.getElementById("menuInicio").style.display = "none";
+    document.getElementById("main-header").style.display = "block";
+    document.getElementById("protected").style.display = "block";
+    document.getElementById("balloons").textContent = 'Balloons destroyed: 0 / ' + this.game.gameData.nballoons;
+    this.interfaceData.showInitMenu = false;
+    this.interfaceData.showHeader = true;
+    this.game.gameData.gameStartedAt = new Date();
+    this.interfaceData.animate = true;
+    this.interfaceData.wagonCamera = true;
+    this.game.gameData.lastCollision = new Date();
+    this.game.gameData.protected = true;
   }
 
   onMouseDown(event) {
@@ -185,11 +186,16 @@ class MyScene extends THREE.Scene {
     if (this.interfaceData.animate) {
       this.game.update();
       this.updateStats();
-      this.CheckCollision();
+      if (!this.game.gameData.protected) {
+        this.CheckCollision();
+      } else {
+        if (Date.now() - this.game.gameData.lastCollision > 3000) {
+          this.game.gameData.protected = false;
+          document.getElementById("protected").style.display = "none";
+        }
+      }
     }
     this.renderer.render(this, this.getCamera());
-
-    // this.game.octree.update();
   }
 
   ///////////////////////////////////////////////////////////////////////////
@@ -241,11 +247,30 @@ class MyScene extends THREE.Scene {
     return sphere1.intersectsSphere(sphere2);
   }
 
+  updateStatAfterCollision() {
+    this.game.gameData.protected = true;
+    this.game.gameData.lastCollision = new Date();
+    this.game.gameData.lives--;
+    if (this.game.gameData.lives < 0) {
+      this.endGame();
+    } else {
+      document.getElementById("lives").textContent = 'Lives: ' + this.game.gameData.lives;
+      document.getElementById("protected").style.display = "block";
+    }
+  }
+
+  endGame() {
+    document.getElementById("menuFin").style.display = "block";
+    document.getElementById("menuFin").innerHTML = "<h1>FIN DEL JUEGO</h1><h2><li>Score: " + Math.trunc(this.game.gameData.playerScore) + "</li><li>Laps: " + this.game.gameData.lapNumber + "</li><li>Balloons deleted: " +  this.game.gameData.ballonsDeleted + "</li></h2>"
+    this.interfaceData.animate = false;
+    this.interfaceData.wagonCamera = false;
+  }
+
   CheckCollision() {
     var wagon = this.game.wagon.collidableSphere.children[0];
     for (let i = 0; i < this.game.obstacles.children.length; i++) {
       if (this.detectCollision(wagon, this.game.getObstacleCollidableMeshAtIndex(i))) {
-        console.log("Collision:", i);
+        this.updateStatAfterCollision();
       }
     }
   }
