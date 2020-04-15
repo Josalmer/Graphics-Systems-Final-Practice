@@ -1,15 +1,16 @@
 class Rail extends THREE.Object3D {
-  constructor(spline) {
+  constructor(spline, mapa = 1) {
     super();
-    this.mesh = this.createMesh(spline);
+    this.mesh = this.createMesh(spline, mapa);
     this.add(this.mesh);
   }
 
-  createMesh(spline) {
+  createMesh(spline, mapa) {
     // TubeGeometry(path : Curve, tubularSegments : Integer, radius : Float, radialSegments : Integer, closed : Boolean)
     var geometry = new THREE.TubeBufferGeometry(spline, 512, 0.7, 12, true);
     // Definir aquí el material de las guías
-    var textureRail = new THREE.TextureLoader().load('imgs/tubo1.jpg');
+    let texture = mapa == 1 ? 'imgs/tubo1.jpg' : 'imgs/tubo1.jpg';
+    var textureRail = new THREE.TextureLoader().load(texture);
     var material = new THREE.MeshPhongMaterial({ map: textureRail });
     var mesh = new THREE.Mesh(geometry, material);
 

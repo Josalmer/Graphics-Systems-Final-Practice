@@ -1,14 +1,17 @@
 class Environment extends THREE.Object3D {
-  constructor() {
+  constructor(mapa = 1) {
     super();
 
     var materialArray = [];
-    var texture_ft = new THREE.TextureLoader().load( 'imgs/ci_ft.jpg');
-    var texture_bk = new THREE.TextureLoader().load( 'imgs/ci_bk.jpg');
-    var texture_up = new THREE.TextureLoader().load( 'imgs/ci_up.jpg');
-    var texture_dn = new THREE.TextureLoader().load( 'imgs/ci_dn.jpg'); //suelo
-    var texture_rt = new THREE.TextureLoader().load( 'imgs/ci_rt.jpg');
-    var texture_lf = new THREE.TextureLoader().load( 'imgs/ci_lf.jpg');
+
+    var url = mapa == 1 ? 'imgs/ci_' : 'imgs/barren_';
+
+    var texture_ft = new THREE.TextureLoader().load( url + 'ft.jpg');
+    var texture_bk = new THREE.TextureLoader().load( url + 'bk.jpg');
+    var texture_up = new THREE.TextureLoader().load( url + 'up.jpg');
+    var texture_dn = new THREE.TextureLoader().load( url + 'dn.jpg');
+    var texture_rt = new THREE.TextureLoader().load( url + 'rt.jpg');
+    var texture_lf = new THREE.TextureLoader().load( url + 'lf.jpg');
       
     materialArray.push(new THREE.MeshBasicMaterial( { map: texture_ft }));
     materialArray.push(new THREE.MeshBasicMaterial( { map: texture_bk }));

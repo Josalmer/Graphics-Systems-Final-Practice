@@ -4,8 +4,8 @@ class Wagon extends THREE.Object3D {
     this.wagonModel = this.createWagonModel();
     this.add(this.wagonModel);
 
-    this.collidableBox = this.createCollidableBox();
-    this.add(this.collidableBox);
+    this.collidableSphere = this.createCollidableSphere();
+    this.add(this.collidableSphere);
 
     this.wagonCam = this.createWagonCam();
     this.add(this.wagonCam);
@@ -55,14 +55,14 @@ class Wagon extends THREE.Object3D {
     return camera;
   }
 
-  createCollidableBox() {
+  createCollidableSphere() {
     var collisions = new THREE.Object3D();
-    var geometry = new THREE.SphereGeometry( 0.43, 8, 8);
-    var material = new THREE.MeshBasicMaterial( {color: 0xffff00, transparent: false} );
-    var box = new THREE.Mesh( geometry, material );
-    box.position.y = 1.4;
-    box.position.z = 0.04;
-    collisions.add( box );
+    var geometry = new THREE.SphereGeometry( 0.45, 8, 8);
+    var material = new THREE.MeshBasicMaterial( {color: 0xffff00, transparent: true, opacity: 0} );
+    var sphere = new THREE.Mesh( geometry, material );
+    sphere.position.y = 1;
+    sphere.position.z = 1;
+    collisions.add( sphere );
 
     return collisions;
   }

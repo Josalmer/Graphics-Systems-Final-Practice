@@ -1,15 +1,12 @@
 class CrazyWagonGame extends THREE.Object3D {
-  constructor(level) {
+  constructor(level, mapa = 1) {
     super();
 
     this.gameData = this.initData(level);
 
-    this.spline = this.createSpline();
+    this.spline = this.createSpline(mapa);
 
-    this.loadModels();
-
-    // this.octree = this.loadOctree()
-    // this.add(this.octree);
+    this.loadModels(mapa);
 
     this.setObjectsInitialPosition();
   }
@@ -27,14 +24,14 @@ class CrazyWagonGame extends THREE.Object3D {
   }
 
   getObstacleCollidableMeshAtIndex(index) {
-    return this.obstacles.children[index].collidableBox.children[0];
+    return this.obstacles.children[index].collidableSphere.children[0];
   }
 
   ///////////////////////////////////////////////////////////////////////////
   // BUILD AND LOAD FUNCTIONS //
   ///////////////////////////////////////////////////////////////////////////
 
-  loadModels() {
+  loadModels(mapa) {
     this.rail = new Rail(this.spline);
     this.add(this.rail);
 
@@ -44,11 +41,12 @@ class CrazyWagonGame extends THREE.Object3D {
     this.obstacles = this.createObstacles();
     this.add(this.obstacles);
 
-    this.balloons = this.createBalloons();
+    this.balloons = this.createBalloons(mapa);
   }
 
-  createSpline() {
-    var spline = new THREE.CatmullRomCurve3([
+  createSpline(mapa) {
+
+    var spline1 = new THREE.CatmullRomCurve3([
       new THREE.Vector3(0, 10, 10), new THREE.Vector3(30, 20, 0),
       new THREE.Vector3(30, 25, 10), new THREE.Vector3(0, 30, 25),
       new THREE.Vector3(-25, 10, 0), new THREE.Vector3(-20, 8, -25),
@@ -59,7 +57,13 @@ class CrazyWagonGame extends THREE.Object3D {
       new THREE.Vector3(-15, 16, 0), new THREE.Vector3(-13, 12, 13),
       new THREE.Vector3(-7, 7, 12), new THREE.Vector3(0, 10, 10)
     ]);
-    return spline;
+
+    var spline2 = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, 10, 10), new THREE.Vector3(30, 20, 0),
+      new THREE.Vector3(0, 10, 10)
+    ]);
+
+    return mapa == 1 ? spline1 : spline2;
   }
 
   initData(level) {
@@ -93,14 +97,6 @@ class CrazyWagonGame extends THREE.Object3D {
     return obstacles;
   }
 
-  getObstaclesMeshs() {
-    var meshs = [];
-    for (let i = 0; i < this.obstacles.children.length; i++) {
-      meshs.push(this.getObstacleAtIndex(i).collidableBox.children[0]);
-    }
-    return meshs;
-  }
-
   countObstacleLoaded() {
     this.gameData.obstaclesLoaded++;
     if (this.gameData.obstaclesLoaded == this.gameData.nObstacles) {
@@ -111,8 +107,20 @@ class CrazyWagonGame extends THREE.Object3D {
     }
   }
 
-  createBalloons() {
-    var positions = [
+  createBalloons(mapa) {
+    var positions1 = [
+      new THREE.Vector3(10, 10, 15), new THREE.Vector3(-10, 15, 0),
+      new THREE.Vector3(0, 20, -10), new THREE.Vector3(-10, 25, -10),
+      new THREE.Vector3(24, 30, 10), new THREE.Vector3(-20, 35, 20),
+      new THREE.Vector3(17, 35, -20), new THREE.Vector3(-18, 35, -18),
+      new THREE.Vector3(23, 30, 20), new THREE.Vector3(-20, 25, 30),
+      new THREE.Vector3(-10, 20, -24), new THREE.Vector3(-30, 15, -30),
+      new THREE.Vector3(13, 10, 46), new THREE.Vector3(-18, 15, 40),
+      new THREE.Vector3(10, 20, -30), new THREE.Vector3(15, 25, 15),
+      new THREE.Vector3(10, 30, 34), new THREE.Vector3(-30, 35, 0),
+      new THREE.Vector3(0, 35, -35), new THREE.Vector3(-20, 35, 0)
+    ]
+    var positions2 = [
       new THREE.Vector3(10, 10, 15), new THREE.Vector3(-10, 15, 0),
       new THREE.Vector3(0, 20, -10), new THREE.Vector3(-10, 25, -10),
       new THREE.Vector3(24, 30, 10), new THREE.Vector3(-20, 35, 20),
@@ -125,6 +133,7 @@ class CrazyWagonGame extends THREE.Object3D {
       new THREE.Vector3(0, 35, -35), new THREE.Vector3(-20, 35, 0)
     ]
     var balloons = [];
+    var positions = mapa == 1 ? positions1 : positions2;
     for (let i = 0; i < this.gameData.nballoons; i++) {
       let radio = Math.floor(this.getRandom(0.8, 2));
       let newBalloon = this.createBalloon(radio);
@@ -145,28 +154,13 @@ class CrazyWagonGame extends THREE.Object3D {
     return ball;
   }
 
-  loadOctree() {
-    this.octree = new THREE.Octree({
-      undeferred: false,      // mejor rendimiento: los objetos se añaden al hacer update
-      depthMax: Infinity,     // produnfidad maxima
-      objectsThreshold: 4,    // numero de objetos para subidividir un nodo
-      overlapPct: 0.2         // porcentaje de solapamiento entre nodos
-    });
-
-    for (let i = 0; i < this.obstacles.children.length; i++) {
-      this.octree.add(this.getObstacleAtIndex(i).collidableBox.children[0]);
-    }
-
-    return this.octree;
-  }
-
   setObjectsInitialPosition() {
     this.placeObjectOnLine(this.wagon, 0);// posicionar wagon
 
     // posicionar obstaculos
     let n_obstacles = this.obstacles.children.length;
     for (let i = 0; i < n_obstacles; i++) {
-      this.placeObjectOnLine(this.getObstacleAtIndex(i), i / n_obstacles);
+      this.placeObjectOnLine(this.getObstacleAtIndex(i), i / n_obstacles, this.getRandom(0, 2 * Math.PI));
     }
   }
 
@@ -178,7 +172,7 @@ class CrazyWagonGame extends THREE.Object3D {
     obj.lookAt(p); // ponemos al objeto mirando hacia la tangente
     if (rotation != 0) {
       obj.model.rotation.z = rotation;
-      obj.collidableBox.rotation.z = rotation;
+      obj.collidableSphere.rotation.z = rotation;
     }
   }
 
@@ -259,13 +253,13 @@ class CrazyWagonGame extends THREE.Object3D {
   turnRight() {
     this.wagon.wagonModel.rotation.z -= 0.07;
     this.wagon.wagonCam.rotation.z -= 0.07;
-    this.wagon.collidableBox.rotation.z -= 0.07;
+    this.wagon.collidableSphere.rotation.z -= 0.07;
   }
 
   turnLeft() {
     this.wagon.wagonModel.rotation.z += 0.07;
     this.wagon.wagonCam.rotation.z += 0.07;
-    this.wagon.collidableBox.rotation.z += 0.07;
+    this.wagon.collidableSphere.rotation.z += 0.07;
   }
 
   ///////////////////////////////////////////////////////////////////////////

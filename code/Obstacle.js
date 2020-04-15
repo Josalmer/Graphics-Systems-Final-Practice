@@ -4,8 +4,8 @@ class Obstacle extends THREE.Object3D {
     this.model = this.createObstacle(type, game);
     this.add(this.model);
 
-    this.collidableBox = this.createCollidableBox();
-    this.add(this.collidableBox);
+    this.collidableSphere = this.createCollidableSphere();
+    this.add(this.collidableSphere);
   }
 
   createObstacle(type, game) {
@@ -37,14 +37,14 @@ class Obstacle extends THREE.Object3D {
     return model;
   }
 
-  createCollidableBox() {
+  createCollidableSphere() {
     var collisions = new THREE.Object3D();
-    var geometry = new THREE.SphereGeometry(0.24, 8, 8);
-    var material = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: false });
-    var cube = new THREE.Mesh(geometry, material);
-    cube.position.y = 1.275;
-    cube.position.z = 0.05;
-    collisions.add(cube);
+    var geometry = new THREE.SphereGeometry(0.3, 8, 8);
+    var material = new THREE.MeshBasicMaterial({ color: 0xff0000, transparent: true, opacity: 0 });
+    var sphere = new THREE.Mesh(geometry, material);
+    sphere.position.y = 1;
+    sphere.position.z = 0.05;
+    collisions.add(sphere);
 
     return collisions;
   }

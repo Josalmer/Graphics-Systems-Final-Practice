@@ -20,11 +20,6 @@ class MyScene extends THREE.Scene {
 
     this.environment = new Environment();
     this.add(this.environment);
-
-    this.obstaclesMeshList = [];  
-    for (let i = 0; i < this.game.obstacles.children.length; i++) {
-      this.obstaclesMeshList.push(this.game.getObstacleCollidableMeshAtIndex(i));
-    }
   }
 
 
@@ -135,9 +130,11 @@ class MyScene extends THREE.Scene {
     document.onkeydown = function (e) {
       switch (e.keyCode) {
         case 37: // Tecla derecha
+        case 65: // tecla a
           that.game.turnRight();
           break;
         case 39: // Tecla izquierda
+        case 68: // Tecla d
           that.game.turnLeft();
           break;
         case 72: //Tecla H - Help
@@ -188,8 +185,7 @@ class MyScene extends THREE.Scene {
     if (this.interfaceData.animate) {
       this.game.update();
       this.updateStats();
-      this.CheckCollisionBox();
-      // this.CheckCollisionRay();
+      this.CheckCollision();
     }
     this.renderer.render(this, this.getCamera());
 
@@ -233,46 +229,23 @@ class MyScene extends THREE.Scene {
   }
 
   detectCollision(object1, object2) {
-    object1.geometry.computeBoundingSphere(); //not needed if its already calculated
-    object2.geometry.computeBoundingSphere();
     object1.updateMatrixWorld();
     object2.updateMatrixWorld();
 
-    var box1 = object1.geometry.boundingSphere.clone();
-    box1.applyMatrix4(object1.matrixWorld);
+    var sphere1 = object1.geometry.boundingSphere.clone();
+    sphere1.applyMatrix4(object1.matrixWorld);
 
-    var box2 = object2.geometry.boundingSphere.clone();
-    box2.applyMatrix4(object2.matrixWorld);
-    
-    if (box1.intersectsSphere(box2)) {
-      debugger
-    }
-    return box1.intersectsSphere(box2);
+    var sphere2 = object2.geometry.boundingSphere.clone();
+    sphere2.applyMatrix4(object2.matrixWorld);
+
+    return sphere1.intersectsSphere(sphere2);
   }
 
-  CheckCollisionBox() {
-    var wagon = this.game.wagon.collidableBox.children[0];
+  CheckCollision() {
+    var wagon = this.game.wagon.collidableSphere.children[0];
     for (let i = 0; i < this.game.obstacles.children.length; i++) {
       if (this.detectCollision(wagon, this.game.getObstacleCollidableMeshAtIndex(i))) {
         console.log("Collision:", i);
-      }
-    }
-  }
-
-  CheckCollisionRay() {
-    var wagon = this.game.wagon;
-    var mesh = wagon.collidableBox.children[0];
-    var originPoint = wagon.position.clone();
-    for (var vertexIndex = 0; vertexIndex < mesh.geometry.vertices.length; vertexIndex++) {
-      var localVertex = mesh.geometry.vertices[vertexIndex].clone();
-      var globalVertex = localVertex.applyMatrix4(mesh.matrix);
-      var directionVector = globalVertex.sub(wagon.position);
-
-      var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-      var collisionResults = ray.intersectObjects(this.obstaclesMeshList);
-      if (collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
-        console.log("Collision");
-        debugger
       }
     }
   }
@@ -302,7 +275,7 @@ $(function () {
     document.getElementById("welcome").style.display = 'none';
     document.getElementById("spinner").style.display = 'none';
     document.getElementById("selectDifficult").style.display = 'block';
-  }, 500);
+  }, 5000);
 
   var easyButton = document.getElementById('easy-button');
   easyButton.onclick = function () {
