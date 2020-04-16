@@ -12,11 +12,14 @@ class MyScene extends THREE.Scene {
 
     this.createCamera();
 
+
     this.axis = new THREE.AxesHelper(10);
     this.add(this.axis);
 
     this.game = new CrazyWagonGame(level, map);
     this.add(this.game);
+
+   
 
     this.environment = new Environment(map);
     this.add(this.environment);
@@ -79,6 +82,30 @@ class MyScene extends THREE.Scene {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
+
+  loadAudio(){
+
+    //------------ ESTA AQUI DE MOMENTO DE PRUEBA ------
+    // Aparte podemos meter otra musica para el otro mapa
+    // var that = this;
+    // create an AudioListener and add it to the camera
+    var listener = new THREE.AudioListener();
+    this.game.add(listener);
+
+    // create a global audio source
+    var sound = new THREE.Audio( listener );
+
+    // load a sound and set it as the Audio object's buffer
+    var audioLoader = new THREE.AudioLoader();
+    audioLoader.load( './sounds/skullbeatz.mp3', function( buffer ) {
+        sound.setBuffer( buffer );
+        sound.setLoop( true );
+        sound.setVolume( 1 );
+        sound.play();
+    });
+    //--------------------------------
+  }
+
   ///////////////////////////////////////////////////////////////////////////
   // GETTERS //
   ///////////////////////////////////////////////////////////////////////////
@@ -117,6 +144,7 @@ class MyScene extends THREE.Scene {
     this.interfaceData.wagonCamera = true;
     this.game.gameData.lastCollision = new Date();
     this.game.gameData.protected = true;
+    this.loadAudio();
   }
 
   onMouseDown(event) {
