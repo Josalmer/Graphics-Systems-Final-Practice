@@ -219,7 +219,7 @@ class CrazyWagonGame extends THREE.Object3D {
     return t;
   }
 
-  moveballoons() {
+  moveBalloons() {
     for (let i = 0; i < this.balloons.length; i++) {
       let ballon = this.getBallonAtIndex(i);
       let veloc = (2 + i) * 0.007 * this.gameData.level;
@@ -242,7 +242,7 @@ class CrazyWagonGame extends THREE.Object3D {
   }
 
   update() {
-    this.moveballoons();
+    this.moveBalloons();
 
     var t = this.getParamT();
     // obtener punto p donde esta el objeto

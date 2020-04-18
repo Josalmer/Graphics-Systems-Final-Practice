@@ -19,8 +19,6 @@ class MyScene extends THREE.Scene {
     this.game = new CrazyWagonGame(level, map);
     this.add(this.game);
 
-   
-
     this.environment = new Environment(map);
     this.add(this.environment);
   }
@@ -90,7 +88,7 @@ class MyScene extends THREE.Scene {
     // var that = this;
     // create an AudioListener and add it to the camera
     var listener = new THREE.AudioListener();
-    this.game.add(listener);
+    this.add(listener);
 
     // create a global audio source
     var sound = new THREE.Audio( listener );
@@ -275,7 +273,7 @@ class MyScene extends THREE.Scene {
     return sphere1.intersectsSphere(sphere2);
   }
 
-  updateStatAfterCollision() {
+  updateStatsAfterCollision() {
     this.game.gameData.protected = true;
     this.game.gameData.lastCollision = new Date();
     this.game.gameData.lives--;
@@ -298,7 +296,7 @@ class MyScene extends THREE.Scene {
     var wagon = this.game.wagon.collidableSphere.children[0];
     for (let i = 0; i < this.game.obstacles.children.length; i++) {
       if (this.detectCollision(wagon, this.game.getObstacleCollidableMeshAtIndex(i))) {
-        this.updateStatAfterCollision();
+        this.updateStatsAfterCollision();
       }
     }
   }
