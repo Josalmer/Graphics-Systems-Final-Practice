@@ -12,6 +12,7 @@ class MyScene extends THREE.Scene {
 
     this.createCamera();
 
+    this.loadAudio();
 
     this.axis = new THREE.AxesHelper(10);
     this.add(this.axis);
@@ -80,28 +81,21 @@ class MyScene extends THREE.Scene {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
-
-  loadAudio(){
-
-    //------------ ESTA AQUI DE MOMENTO DE PRUEBA ------
-    // Aparte podemos meter otra musica para el otro mapa
-    // var that = this;
-    // create an AudioListener and add it to the camera
+  loadAudio() {
     var listener = new THREE.AudioListener();
     this.add(listener);
-
-    // create a global audio source
-    var sound = new THREE.Audio( listener );
-
-    // load a sound and set it as the Audio object's buffer
+    this.music = new THREE.Audio(listener);
     var audioLoader = new THREE.AudioLoader();
-    audioLoader.load( './sounds/skullbeatz.mp3', function( buffer ) {
-        sound.setBuffer( buffer );
-        sound.setLoop( true );
-        sound.setVolume( 1 );
-        sound.play();
+    var that = this;
+    audioLoader.load('./sounds/skullbeatz.mp3', function (buffer) {
+      that.music.setBuffer(buffer);
+      that.music.setLoop(true);
+      that.music.setVolume(0.2);
     });
-    //--------------------------------
+  }
+
+  playMusic() {
+    this.music.play();
   }
 
   ///////////////////////////////////////////////////////////////////////////
@@ -134,6 +128,7 @@ class MyScene extends THREE.Scene {
     document.getElementById("menuInicio").style.display = "none";
     document.getElementById("main-header").style.display = "block";
     document.getElementById("protected").style.display = "block";
+    document.getElementById("WebGL-output").style.filter = "grayscale(100%)";
     document.getElementById("balloons").textContent = 'Balloons destroyed: 0 / ' + this.game.gameData.nballoons;
     this.interfaceData.showInitMenu = false;
     this.interfaceData.showHeader = true;
@@ -142,7 +137,7 @@ class MyScene extends THREE.Scene {
     this.interfaceData.wagonCamera = true;
     this.game.gameData.lastCollision = new Date();
     this.game.gameData.protected = true;
-    this.loadAudio();
+    this.playMusic();
   }
 
   onMouseDown(event) {
@@ -218,6 +213,7 @@ class MyScene extends THREE.Scene {
         if (Date.now() - this.game.gameData.lastCollision > 3000) {
           this.game.gameData.protected = false;
           document.getElementById("protected").style.display = "none";
+          document.getElementById("WebGL-output").style.filter = "";
         }
       }
     }
@@ -277,19 +273,21 @@ class MyScene extends THREE.Scene {
     this.game.gameData.protected = true;
     this.game.gameData.lastCollision = new Date();
     this.game.gameData.lives--;
-    if (this.game.gameData.lives < 0) {
+    document.getElementById("lives").textContent = 'Lives: ' + this.game.gameData.lives;
+    if (this.game.gameData.lives == 0) {
       this.endGame();
     } else {
-      document.getElementById("lives").textContent = 'Lives: ' + this.game.gameData.lives;
       document.getElementById("protected").style.display = "block";
+      document.getElementById("WebGL-output").style.filter = "grayscale(100%)";
     }
   }
 
   endGame() {
     document.getElementById("menuFin").style.display = "block";
-    document.getElementById("menuFin").innerHTML = "<h1>FIN DEL JUEGO</h1><h2><li>Score: " + Math.trunc(this.game.gameData.playerScore) + "</li><li>Laps: " + this.game.gameData.lapNumber + "</li><li>Balloons deleted: " +  this.game.gameData.ballonsDeleted + "</li></h2>"
+    document.getElementById("menuFin").innerHTML = "<h1>FIN DEL JUEGO</h1><h2><li>Score: " + Math.trunc(this.game.gameData.playerScore) + "</li><li>Laps: " + this.game.gameData.lapNumber + "</li><li>Balloons deleted: " + this.game.gameData.ballonsDeleted + "</li></h2>"
     this.interfaceData.animate = false;
     this.interfaceData.wagonCamera = false;
+    this.music.stop();
   }
 
   CheckCollision() {
