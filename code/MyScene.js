@@ -12,7 +12,7 @@ class MyScene extends THREE.Scene {
 
     this.createCamera();
 
-    this.loadAudio();
+    this.loadAudio(map);
 
     this.axis = new THREE.AxesHelper(10);
     this.add(this.axis);
@@ -33,7 +33,7 @@ class MyScene extends THREE.Scene {
     var userInt = {
       showInitMenu: true,
       showHelpMenu: true,
-      lightIntensity: 0.75,
+      lightIntensity: 0.5,
       axisOnOff: true,
       animate: false,
       wagonCamera: false
@@ -43,7 +43,7 @@ class MyScene extends THREE.Scene {
 
   createCamera() {
     this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    this.camera.position.set(30, 70, 60);
+    this.camera.position.set(30, 70, 80);
     var look = new THREE.Vector3(0, 0, 0);
     this.camera.lookAt(look);
     this.add(this.camera);
@@ -53,6 +53,7 @@ class MyScene extends THREE.Scene {
     this.cameraControl.panSpeed = 0.5;
     this.cameraControl.target = look;
     this.cameraControl.enabled = true;
+    this.cameraControl.maxDistance = 130;
   }
 
   createLights() {
@@ -81,13 +82,14 @@ class MyScene extends THREE.Scene {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
-  loadAudio() {
+  loadAudio(map) {
     var listener = new THREE.AudioListener();
     this.add(listener);
     this.music = new THREE.Audio(listener);
     var audioLoader = new THREE.AudioLoader();
+    let url = map == 1 ? './sounds/skullbeatz.mp3' : './sounds/morricone.mp3';
     var that = this;
-    audioLoader.load('./sounds/skullbeatz.mp3', function (buffer) {
+    audioLoader.load(url, function (buffer) {
       that.music.setBuffer(buffer);
       that.music.setLoop(true);
       that.music.setVolume(0.2);
@@ -170,6 +172,9 @@ class MyScene extends THREE.Scene {
           break;
         case 86: //Letra V
           console.log("Imprimir variables de control: ", this);
+          break;
+        case 82: //Letra R 
+          //Reiniciar jueog
           break;
       }
     };

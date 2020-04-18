@@ -11,6 +11,7 @@ class CrazyWagonGame extends THREE.Object3D {
     this.setObjectsInitialPosition();
   }
 
+
   ///////////////////////////////////////////////////////////////////////////
   // GETTERS //
   ///////////////////////////////////////////////////////////////////////////
@@ -32,7 +33,8 @@ class CrazyWagonGame extends THREE.Object3D {
   ///////////////////////////////////////////////////////////////////////////
 
   loadModels(mapa) {
-    this.rail = new Rail(this.spline);
+    
+    this.rail = new Rail(this.spline, mapa);
     this.add(this.rail);
 
     this.wagon = new Wagon();
