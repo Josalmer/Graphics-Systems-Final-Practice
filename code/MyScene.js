@@ -85,13 +85,17 @@ class MyScene extends THREE.Scene {
     var listener = new THREE.AudioListener();
     this.add(listener);
     this.music = new THREE.Audio(listener);
-    var audioLoader = new THREE.AudioLoader();
+    this.audioLoader = new THREE.AudioLoader();
+    this.loadMusic(map);
+  }
+
+  loadMusic(map) {
     let url = map == 1 ? './sounds/skullbeatz.mp3' : './sounds/morricone.mp3';
     var that = this;
-    audioLoader.load(url, function (buffer) {
+    this.audioLoader.load(url, function (buffer) {
       that.music.setBuffer(buffer);
       that.music.setLoop(true);
-      that.music.setVolume(0.2);
+      that.music.setVolume(0.15);
     });
   }
 
@@ -305,9 +309,6 @@ class MyScene extends THREE.Scene {
 }
 
 $(function () {
-
-  var level;
-
   function start(level) {
     document.getElementById("selectDifficult").style.display = 'none';
     document.getElementById("spinner").style.display = 'block';
@@ -333,27 +334,24 @@ $(function () {
     document.getElementById("welcome").style.display = 'none';
     document.getElementById("spinner").style.display = 'none';
     document.getElementById("selectDifficult").style.display = 'block';
-  }, 3500);
+  }, 2000);
 
   var easyButton = document.getElementById('easy-button');
   easyButton.onclick = function () {
     console.log("Loading game: Easy level");
-    level = 1;
-    start(level);
+    start(1);
   }
 
   var mediumButton = document.getElementById('medium-button');
   mediumButton.onclick = function () {
     console.log("Loading game: Medium level");
-    level = 1.5;
-    start(level);
+    start(1.5);
   }
 
   var hardButton = document.getElementById('hard-button');
   hardButton.onclick = function () {
     console.log("Loading game: Hard level");
-    level = 2;
-    start(level);
+    start(2);
   }
 
   var spaceButton = document.getElementById('space-button');
@@ -366,27 +364,6 @@ $(function () {
   westButton.onclick = function () {
     document.getElementById("space-button").checked = false;
     document.getElementById("west-button").checked = true;
-  }
-
-  var restartButton = document.getElementById('restart-button');
-  restartButton.onclick = function () {
-    document.getElementById("menuFin").style.display = "none";
-    document.getElementById("menuInicio").style.display = "block";
-    let map = document.getElementById("space-button").checked ? 1 : 2;
-    console.log("Selected map: ", map);
-
-    var scene = new MyScene("#WebGL-output", level, map);
-
-    var startButton = document.getElementById('start-game-button');
-    startButton.onclick = function StartAnimation() {
-      scene.startGame();
-    }
-
-    window.addEventListener("resize", () => scene.onWindowResize());
-    //Llamada a la funcion que controla las entradas del teclado
-    window.addEventListener("keydown", () => scene.setupKeyControls());
-    window.addEventListener("mousedown", (event) => scene.onMouseDown(event), true);
-    scene.update();
   }
 
   var reloadButton = document.getElementById('reload-button');

@@ -33,7 +33,6 @@ class CrazyWagonGame extends THREE.Object3D {
   ///////////////////////////////////////////////////////////////////////////
 
   loadModels(mapa) {
-    
     this.rail = new Rail(this.spline, mapa);
     this.add(this.rail);
 
@@ -61,15 +60,15 @@ class CrazyWagonGame extends THREE.Object3D {
     ]);
 
     var spline2 = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(0, 10, 10), new THREE.Vector3(30, 20, 0),
-      new THREE.Vector3(30, 25, 10), new THREE.Vector3(0, 30, 25),
-      new THREE.Vector3(-25, 10, 0), new THREE.Vector3(-20, 8, -25),
-      new THREE.Vector3(0, 30, 4), new THREE.Vector3(-10, 15, 35),
-      new THREE.Vector3(14, 40, 40), new THREE.Vector3(24, 45, 35),
+      new THREE.Vector3(0, 10, 10), new THREE.Vector3(-7, 7, 12),
+      new THREE.Vector3(-13, 12, 13), new THREE.Vector3(-15, 16, 0),
+      new THREE.Vector3(-12, 20, -30), new THREE.Vector3(12, 12, -15),
       new THREE.Vector3(-10, 27, 10),
-      new THREE.Vector3(12, 12, -15), new THREE.Vector3(-12, 20, -30),
-      new THREE.Vector3(-15, 16, 0), new THREE.Vector3(-13, 12, 13),
-      new THREE.Vector3(-7, 7, 12), new THREE.Vector3(0, 10, 10)
+      new THREE.Vector3(24, 45, 35), new THREE.Vector3(14, 40, 40),
+      new THREE.Vector3(-10, 15, 35), new THREE.Vector3(0, 30, 4),
+      new THREE.Vector3(-20, 8, -25), new THREE.Vector3(-25, 10, 0),
+      new THREE.Vector3(0, 30, 25), new THREE.Vector3(30, 25, 10),
+      new THREE.Vector3(30, 20, 0), new THREE.Vector3(0, 10, 10)
     ]);
 
     return mapa == 1 ? spline1 : spline2;
