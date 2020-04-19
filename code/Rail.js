@@ -1,5 +1,5 @@
 class Rail extends THREE.Object3D {
-  constructor(spline, mapa=1) {
+  constructor(spline, mapa = 1) {
     super();
     this.mesh = this.createMesh(spline, mapa);
     this.add(this.mesh);

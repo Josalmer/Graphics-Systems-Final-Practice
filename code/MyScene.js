@@ -24,7 +24,6 @@ class MyScene extends THREE.Scene {
     this.add(this.environment);
   }
 
-
   ///////////////////////////////////////////////////////////////////////////
   // SCENE MUST BE //
   ///////////////////////////////////////////////////////////////////////////
@@ -173,9 +172,6 @@ class MyScene extends THREE.Scene {
         case 86: //Letra V
           console.log("Imprimir variables de control: ", this);
           break;
-        case 82: //Letra R 
-          //Reiniciar jueog
-          break;
       }
     };
   }
@@ -289,7 +285,10 @@ class MyScene extends THREE.Scene {
 
   endGame() {
     document.getElementById("menuFin").style.display = "block";
-    document.getElementById("menuFin").innerHTML = "<h1>FIN DEL JUEGO</h1><h2><li>Score: " + Math.trunc(this.game.gameData.playerScore) + "</li><li>Laps: " + this.game.gameData.lapNumber + "</li><li>Balloons deleted: " + this.game.gameData.ballonsDeleted + "</li></h2>"
+    document.getElementById("fin-score").textContent = "Score: " + Math.trunc(this.game.gameData.playerScore);
+    document.getElementById("fin-laps").textContent = "Laps: " + this.game.gameData.lapNumber;
+    document.getElementById("fin-balloons").textContent = "Balloons deleted: " + this.game.gameData.ballonsDeleted;
+    document.getElementById("fin-time").textContent = document.getElementById("crono").textContent;
     this.interfaceData.animate = false;
     this.interfaceData.wagonCamera = false;
     this.music.stop();
@@ -306,6 +305,8 @@ class MyScene extends THREE.Scene {
 }
 
 $(function () {
+
+  var level;
 
   function start(level) {
     document.getElementById("selectDifficult").style.display = 'none';
@@ -337,19 +338,22 @@ $(function () {
   var easyButton = document.getElementById('easy-button');
   easyButton.onclick = function () {
     console.log("Loading game: Easy level");
-    start(1);
+    level = 1;
+    start(level);
   }
 
   var mediumButton = document.getElementById('medium-button');
   mediumButton.onclick = function () {
     console.log("Loading game: Medium level");
-    start(1.5);
+    level = 1.5;
+    start(level);
   }
 
   var hardButton = document.getElementById('hard-button');
   hardButton.onclick = function () {
     console.log("Loading game: Hard level");
-    start(2);
+    level = 2;
+    start(level);
   }
 
   var spaceButton = document.getElementById('space-button');
@@ -362,5 +366,31 @@ $(function () {
   westButton.onclick = function () {
     document.getElementById("space-button").checked = false;
     document.getElementById("west-button").checked = true;
+  }
+
+  var restartButton = document.getElementById('restart-button');
+  restartButton.onclick = function () {
+    document.getElementById("menuFin").style.display = "none";
+    document.getElementById("menuInicio").style.display = "block";
+    let map = document.getElementById("space-button").checked ? 1 : 2;
+    console.log("Selected map: ", map);
+
+    var scene = new MyScene("#WebGL-output", level, map);
+
+    var startButton = document.getElementById('start-game-button');
+    startButton.onclick = function StartAnimation() {
+      scene.startGame();
+    }
+
+    window.addEventListener("resize", () => scene.onWindowResize());
+    //Llamada a la funcion que controla las entradas del teclado
+    window.addEventListener("keydown", () => scene.setupKeyControls());
+    window.addEventListener("mousedown", (event) => scene.onMouseDown(event), true);
+    scene.update();
+  }
+
+  var reloadButton = document.getElementById('reload-button');
+  reloadButton.onclick = function () {
+    location.reload();
   }
 });
