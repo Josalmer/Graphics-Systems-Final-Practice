@@ -293,6 +293,7 @@ class MyScene extends THREE.Scene {
     document.getElementById("fin-laps").textContent = "Laps: " + this.game.gameData.lapNumber;
     document.getElementById("fin-balloons").textContent = "Balloons deleted: " + this.game.gameData.ballonsDeleted;
     document.getElementById("fin-time").textContent = document.getElementById("crono").textContent;
+    document.getElementById("main-header").style.display = "none";
     this.interfaceData.animate = false;
     this.interfaceData.wagonCamera = false;
     this.music.stop();
