@@ -93,7 +93,7 @@ class MyScene extends THREE.Scene {
   }
 
   loadMusic(map) {
-    let url = map == 1 ? './sounds/skullbeatz.mp3' : './sounds/morricone.mp3';
+    let url = map == 1 ? './sounds/skullbeatz.mp3' : './sounds/morricone2.mov';
     var that = this;
     this.audioLoader.load(url, function (buffer) {
       that.music.setBuffer(buffer);
