@@ -85,8 +85,11 @@ class MyScene extends THREE.Scene {
     var listener = new THREE.AudioListener();
     this.add(listener);
     this.music = new THREE.Audio(listener);
+    this.balloonSound = new THREE.Audio(listener);
+    this.collisionSound = new THREE.Audio(listener);
     this.audioLoader = new THREE.AudioLoader();
     this.loadMusic(map);
+    this.loadSounds();
   }
 
   loadMusic(map) {
@@ -97,6 +100,28 @@ class MyScene extends THREE.Scene {
       that.music.setLoop(true);
       that.music.setVolume(0.15);
     });
+  }
+
+  loadSounds() {
+    var that = this;
+    this.audioLoader.load('./sounds/balloon.mp3', function (buffer) {
+      that.balloonSound.setBuffer(buffer);
+      that.balloonSound.setLoop(false);
+      that.balloonSound.setVolume(0.3);
+    });
+    this.audioLoader.load('./sounds/collision.mp3', function (buffer) {
+      that.collisionSound.setBuffer(buffer);
+      that.collisionSound.setLoop(false);
+      that.collisionSound.setVolume(0.3);
+    });
+  }
+
+  playBalloonPickedSound() {
+    this.balloonSound.play();
+  }
+
+  playCollisionSound() {
+    this.collisionSound.play();
   }
 
   playMusic() {
@@ -248,6 +273,7 @@ class MyScene extends THREE.Scene {
     if (intersectedObjects.length > 0) {
 
       this.updateStatAfterPickingBalloon();
+      this.playBalloonPickedSound();
 
       // Hide object and make unselectable
       let pickedObject = intersectedObjects[0].object;
@@ -303,6 +329,7 @@ class MyScene extends THREE.Scene {
     var wagon = this.game.wagon.collidableSphere.children[0];
     for (let i = 0; i < this.game.obstacles.children.length; i++) {
       if (this.detectCollision(wagon, this.game.getObstacleCollidableMeshAtIndex(i))) {
+        this.playCollisionSound();
         this.updateStatsAfterCollision();
       }
     }
