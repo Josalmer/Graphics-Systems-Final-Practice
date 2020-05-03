@@ -208,7 +208,7 @@ class CrazyWagonGame extends THREE.Object3D {
   moveBalloons(deltaTime) {
     for (let i = 0; i < this.balloons.length; i++) {
       let ballon = this.getBallonAtIndex(i);
-      let veloc = deltaTime * (2 + i) * 0.00007 * this.gameData.level;
+      let veloc = deltaTime * (2 + i) * 0.0002 * this.gameData.level;
       if (ballon.subiendo) {
         if (ballon.position.y < 40) {
           ballon.position.y += veloc;
