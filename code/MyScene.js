@@ -29,7 +29,6 @@ class MyScene extends THREE.Scene {
     var userInt = {
       showInitMenu: true,
       showHelpMenu: true,
-      lightIntensity: 0.5,
       animate: false,
       wagonCamera: false
     };
@@ -54,7 +53,7 @@ class MyScene extends THREE.Scene {
   createLights() {
     var ambientLight = new THREE.AmbientLight(0xccddee, 0.35);
     this.add(ambientLight);
-    this.spotLight = new THREE.SpotLight(0xffffff, this.interfaceData.lightIntensity);
+    this.spotLight = new THREE.SpotLight(0xffffff, 0.5);
     this.spotLight.position.set(60, 60, 40);
     this.add(this.spotLight);
   }
@@ -146,6 +145,9 @@ class MyScene extends THREE.Scene {
   }
 
   toggleAnimation() {
+    if (!this.animate) {
+      this.game.gameData.lastTime = Date.now();
+    }
     this.interfaceData.animate = !this.interfaceData.animate;
     document.getElementById("pause").style.display = this.interfaceData.animate ? 'none' : 'block';
   }
@@ -161,19 +163,21 @@ class MyScene extends THREE.Scene {
     document.getElementById("protected").style.display = "block";
     document.getElementById("WebGL-output").style.filter = "grayscale(100%)";
     document.getElementById("balloons").textContent = 'Balloons destroyed: 0 / ' + this.game.gameData.nballoons;
+    // GameData
+    this.game.gameData.lastTime = Date.now();
+    this.game.gameData.lastCollision = 0;
+    this.game.gameData.protected = true;
+    // InterfaceData
     this.interfaceData.showInitMenu = false;
     this.interfaceData.showHeader = true;
-    this.game.gameData.gameStartedAt = new Date();
     this.interfaceData.animate = true;
     this.interfaceData.wagonCamera = true;
-    this.game.gameData.lastCollision = new Date();
-    this.game.gameData.protected = true;
     this.playMusic();
   }
 
   onMouseDown(event) {
     if (event.button == 0) {   // Left button
-      if (this.game.gameStartedAt != null) {
+      if (this.interfaceData.animate) {
         this.checkRayPicking(event);
       }
     }
@@ -186,11 +190,15 @@ class MyScene extends THREE.Scene {
       switch (e.keyCode) {
         case 37: // Tecla izquierda
         case 65: // tecla a
-        that.game.turnLeft();
+          if (that.interfaceData.animate) {
+            that.game.turnLeft();
+          }
           break;
         case 39: // Tecla derecha
         case 68: // Tecla d
-        that.game.turnRight();
+          if (that.interfaceData.animate) {
+            that.game.turnRight();
+          }
           break;
         case 72: //Tecla H - Help
           that.toggleHelp();
@@ -212,37 +220,39 @@ class MyScene extends THREE.Scene {
   // ANIMATION //
   ///////////////////////////////////////////////////////////////////////////
 
-  updateStats() {
-    this.updateCrono();
-    this.updateScore();
+  updateStats(deltaTime) {
+    this.updateCrono(deltaTime);
+    this.updateScore(deltaTime);
   }
 
-  updateCrono() {
-    let ahora = new Date();
-    let crono = new Date(ahora - this.game.gameData.gameStartedAt);
-    let output = "Time: " + crono.getMinutes() + ':' + crono.getSeconds() + ':' + Math.trunc(crono.getMilliseconds() / 10);
-
+  updateCrono(deltaTime) {
+    this.game.gameData.chronoTime += deltaTime;
+    let output = "Time: " + Math.floor(this.game.gameData.chronoTime / 60000)
+                    + ':' + Math.floor((this.game.gameData.chronoTime % 60000) / 1000)
+                    + ':' + Math.floor((this.game.gameData.chronoTime % 60000) % 1000)
     document.getElementById("crono").textContent = output;
   }
 
-  updateScore() {
-    this.game.gameData.playerScore += 0.1 * (this.game.gameData.lapNumber + 1) * this.game.gameData.level;
+  updateScore(deltaTime) {
+    this.game.gameData.playerScore += deltaTime * 0.001 * (this.game.gameData.lapNumber + 1) * this.game.gameData.level;
     document.getElementById("score").textContent = "Score: " + Math.trunc(this.game.gameData.playerScore) + ' points';
   }
 
   update() {
     requestAnimationFrame(() => this.update())
-    this.spotLight.intensity = this.interfaceData.lightIntensity;
-
     this.cameraControl.update();
 
     if (this.interfaceData.animate) {
-      this.game.update();
-      this.updateStats();
+      var now =  Date.now();
+      var deltaTime =  now - this.game.gameData.lastTime;
+      this.game.gameData.lastTime = now;
+      this.game.update(deltaTime);
+      this.updateStats(deltaTime);
       if (!this.game.gameData.protected) {
         this.CheckCollision();
       } else {
-        if (Date.now() - this.game.gameData.lastCollision > 3000) {
+        this.game.gameData.lastCollision += deltaTime;
+        if (this.game.gameData.lastCollision > 3000) {
           this.game.gameData.protected = false;
           document.getElementById("protected").style.display = "none";
           document.getElementById("WebGL-output").style.filter = "";
@@ -304,7 +314,7 @@ class MyScene extends THREE.Scene {
 
   updateStatsAfterCollision() {
     this.game.gameData.protected = true;
-    this.game.gameData.lastCollision = new Date();
+    this.game.gameData.lastCollision = 0;
     this.game.gameData.lives--;
     document.getElementById("lives").textContent = 'Lives: ' + this.game.gameData.lives;
     if (this.game.gameData.lives == 0) {

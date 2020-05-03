@@ -86,7 +86,8 @@ class CrazyWagonGame extends THREE.Object3D {
       lapNumber: -1,
       t_prev: 99,
       timeNewLap: Date.now(),
-      gameStartedAt: null,
+      lastTime: Date.now(),
+      chronoTime: null,
       obstaclesLoaded: 0,
       nObstacles: 20 * level,
       nballoons: 20,
@@ -190,7 +191,7 @@ class CrazyWagonGame extends THREE.Object3D {
   // ANIMATION FUNCTIONS //
   ///////////////////////////////////////////////////////////////////////////
 
-  getParamT() {
+  getParamT(deltaTime) {
     // parametro t entre 0 y 1
     // Representa posición en el spline
     // 0 principio
@@ -242,10 +243,10 @@ class CrazyWagonGame extends THREE.Object3D {
     }
   }
 
-  update() {
+  update(deltaTime) {
     this.moveBalloons();
 
-    var t = this.getParamT();
+    var t = this.getParamT(deltaTime);
     // obtener punto p donde esta el objeto
     var p = this.spline.getPointAt(t);
     // obtenemos tangente a la curva en p
