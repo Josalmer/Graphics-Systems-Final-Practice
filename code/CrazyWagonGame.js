@@ -261,15 +261,15 @@ class CrazyWagonGame extends THREE.Object3D {
   ///////////////////////////////////////////////////////////////////////////
 
   turnRight() {
-    this.wagon.wagonModel.rotation.z -= 0.07;
-    this.wagon.wagonCam.rotation.z -= 0.07;
-    this.wagon.collidableSphere.rotation.z -= 0.07;
-  }
-
-  turnLeft() {
     this.wagon.wagonModel.rotation.z += 0.07;
     this.wagon.wagonCam.rotation.z += 0.07;
     this.wagon.collidableSphere.rotation.z += 0.07;
+  }
+
+  turnLeft() {
+    this.wagon.wagonModel.rotation.z -= 0.07;
+    this.wagon.wagonCam.rotation.z -= 0.07;
+    this.wagon.collidableSphere.rotation.z -= 0.07;
   }
 
   ///////////////////////////////////////////////////////////////////////////

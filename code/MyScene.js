@@ -14,9 +14,6 @@ class MyScene extends THREE.Scene {
 
     this.loadAudio(map);
 
-    this.axis = new THREE.AxesHelper(10);
-    this.add(this.axis);
-
     this.game = new CrazyWagonGame(level, map);
     this.add(this.game);
 
@@ -33,7 +30,6 @@ class MyScene extends THREE.Scene {
       showInitMenu: true,
       showHelpMenu: true,
       lightIntensity: 0.5,
-      axisOnOff: true,
       animate: false,
       wagonCamera: false
     };
@@ -80,6 +76,11 @@ class MyScene extends THREE.Scene {
     this.setCameraAspect(window.innerWidth / window.innerHeight);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
+
+ 
+  ///////////////////////////////////////////////////////////////////////////
+  // SOUNDS & MUSIC //
+  /////////////////////////////////////////////////////////////////////////// 
 
   loadAudio(map) {
     var listener = new THREE.AudioListener();
@@ -172,7 +173,9 @@ class MyScene extends THREE.Scene {
 
   onMouseDown(event) {
     if (event.button == 0) {   // Left button
-      this.checkRayPicking(event);
+      if (this.game.gameStartedAt != null) {
+        this.checkRayPicking(event);
+      }
     }
   }
 
@@ -181,13 +184,13 @@ class MyScene extends THREE.Scene {
     var that = this;
     document.onkeydown = function (e) {
       switch (e.keyCode) {
-        case 37: // Tecla derecha
+        case 37: // Tecla izquierda
         case 65: // tecla a
-          that.game.turnRight();
+        that.game.turnLeft();
           break;
-        case 39: // Tecla izquierda
+        case 39: // Tecla derecha
         case 68: // Tecla d
-          that.game.turnLeft();
+        that.game.turnRight();
           break;
         case 72: //Tecla H - Help
           that.toggleHelp();
@@ -230,7 +233,6 @@ class MyScene extends THREE.Scene {
   update() {
     requestAnimationFrame(() => this.update())
     this.spotLight.intensity = this.interfaceData.lightIntensity;
-    this.axis.visible = this.interfaceData.axisOnOff;
 
     this.cameraControl.update();
 
@@ -335,6 +337,10 @@ class MyScene extends THREE.Scene {
     }
   }
 }
+
+  ///////////////////////////////////////////////////////////////////////////
+  // SCRIPT //
+  ///////////////////////////////////////////////////////////////////////////
 
 $(function () {
   function start(level) {
