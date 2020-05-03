@@ -75,27 +75,16 @@ class CrazyWagonGame extends THREE.Object3D {
   }
 
   initData(level) {
-    var _initialTime = (49 - (4 * level)) * 1000; // 45 easy, 43 medium, 41 hard
-    var _deltaTime = 2.5 * 1000;    // se recorta cada vuelta 2.5 seconds
     var gameData = {
       level: level,
-      initialTime: _initialTime,
-      minimumTime: 20 * 1000,     // 20 segundos una vuelta
-      deltaTime: _deltaTime,
-      currentTime: _initialTime + _deltaTime,
-      lapNumber: -1,
-      t_prev: 99,
-      timeNewLap: Date.now(),
-      lastTime: Date.now(),
-      chronoTime: null,
+      minimumTime: 20 * 1000,   // 20 segundos una vuelta
+      deltaTime: 2.5 * 1000,    // se recorta cada vuelta 2.5 seconds
+      currentLapDuration: (49 - (4 * level)) * 1000, // 45 easy, 43 medium, 41 hard
+      lapNumber: 0,
+      timeAtCurrentLap: 0,
       obstaclesLoaded: 0,
       nObstacles: 20 * level,
-      nballoons: 20,
-      playerScore: 0,
-      ballonsDeleted: 0,
-      lives: 3,
-      lastCollision: null,
-      protected: null
+      nballoons: 20
     };
     return gameData;
   }
@@ -196,35 +185,30 @@ class CrazyWagonGame extends THREE.Object3D {
     // Representa posición en el spline
     // 0 principio
     // 1 final
-    var timeActual = Date.now() - this.gameData.timeNewLap;
-    var looptime = this.gameData.currentTime;
-    var t = (timeActual % looptime) / looptime;
-    t = this.checkNewLap(t);
-    return t;
-  }
 
-  checkNewLap(t) {
-    if (this.gameData.t_prev > t) {
-      // nueva vuelta     
-      this.gameData.lapNumber += 1;
-      document.getElementById("laps").textContent = "Laps: " + this.gameData.lapNumber;
-
-      if (this.gameData.currentTime - this.gameData.deltaTime >= this.gameData.minimumTime) {
-        this.gameData.currentTime -= this.gameData.deltaTime;
-      } else {
-        this.gameData.currentTime = this.gameData.minimumTime;
-      }
-      this.gameData.timeNewLap = Date.now();
-      t = 0;
+    this.gameData.timeAtCurrentLap += deltaTime;
+    if (this.gameData.timeAtCurrentLap > this.gameData.currentLapDuration) {
+      this.finishLap();
     }
-    this.gameData.t_prev = t;
+    var t = this.gameData.timeAtCurrentLap / this.gameData.currentLapDuration;
     return t;
   }
 
-  moveBalloons() {
+  finishLap() {
+    this.gameData.timeAtCurrentLap = 0;
+    this.gameData.lapNumber += 1;
+    document.getElementById("laps").textContent = "Laps: " + this.gameData.lapNumber;
+    if (this.gameData.currentLapDuration - this.gameData.deltaTime >= this.gameData.minimumTime) {
+      this.gameData.currentLapDuration -= this.gameData.deltaTime;
+    } else {
+      this.gameData.currentLapDuration = this.gameData.minimumTime;
+    }
+  }
+
+  moveBalloons(deltaTime) {
     for (let i = 0; i < this.balloons.length; i++) {
       let ballon = this.getBallonAtIndex(i);
-      let veloc = (2 + i) * 0.007 * this.gameData.level;
+      let veloc = deltaTime * (2 + i) * 0.00007 * this.gameData.level;
       if (ballon.subiendo) {
         if (ballon.position.y < 40) {
           ballon.position.y += veloc;
@@ -243,9 +227,7 @@ class CrazyWagonGame extends THREE.Object3D {
     }
   }
 
-  update(deltaTime) {
-    this.moveBalloons();
-
+  moveWagon(deltaTime) {
     var t = this.getParamT(deltaTime);
     // obtener punto p donde esta el objeto
     var p = this.spline.getPointAt(t);
@@ -255,6 +237,11 @@ class CrazyWagonGame extends THREE.Object3D {
     this.wagon.position.copy(p);
     p.add(tangente);
     this.wagon.lookAt(p); // ponemos al objeto mirando hacia la tangente
+  }
+
+  update(deltaTime) {
+    this.moveBalloons(deltaTime);
+    this.moveWagon(deltaTime);
   }
 
   ///////////////////////////////////////////////////////////////////////////

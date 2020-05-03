@@ -30,7 +30,14 @@ class MyScene extends THREE.Scene {
       showInitMenu: true,
       showHelpMenu: true,
       animate: false,
-      wagonCamera: false
+      wagonCamera: false,
+      lastTime: 0,
+      chronoTime: 0,
+      playerScore: 0,
+      ballonsDeleted: 0,
+      lives: 3,
+      lastCollision: null,
+      protected: null
     };
     return userInt;
   }
@@ -117,6 +124,9 @@ class MyScene extends THREE.Scene {
   }
 
   playBalloonPickedSound() {
+    if (this.balloonSound.isPlaying) {
+      this.balloonSound.stop();
+    }
     this.balloonSound.play();
   }
 
@@ -146,7 +156,7 @@ class MyScene extends THREE.Scene {
 
   toggleAnimation() {
     if (!this.animate) {
-      this.game.gameData.lastTime = Date.now();
+      this.interfaceData.lastTime = Date.now();
     }
     this.interfaceData.animate = !this.interfaceData.animate;
     document.getElementById("pause").style.display = this.interfaceData.animate ? 'none' : 'block';
@@ -163,11 +173,9 @@ class MyScene extends THREE.Scene {
     document.getElementById("protected").style.display = "block";
     document.getElementById("WebGL-output").style.filter = "grayscale(100%)";
     document.getElementById("balloons").textContent = 'Balloons destroyed: 0 / ' + this.game.gameData.nballoons;
-    // GameData
-    this.game.gameData.lastTime = Date.now();
-    this.game.gameData.lastCollision = 0;
-    this.game.gameData.protected = true;
-    // InterfaceData
+    this.interfaceData.lastCollision = 0;
+    this.interfaceData.protected = true;
+    this.interfaceData.lastTime = Date.now();
     this.interfaceData.showInitMenu = false;
     this.interfaceData.showHeader = true;
     this.interfaceData.animate = true;
@@ -226,16 +234,16 @@ class MyScene extends THREE.Scene {
   }
 
   updateCrono(deltaTime) {
-    this.game.gameData.chronoTime += deltaTime;
-    let output = "Time: " + Math.floor(this.game.gameData.chronoTime / 60000)
-                    + ':' + Math.floor((this.game.gameData.chronoTime % 60000) / 1000)
-                    + ':' + Math.floor((this.game.gameData.chronoTime % 60000) % 1000)
+    this.interfaceData.chronoTime += deltaTime;
+    let output = "Time: " + Math.floor(this.interfaceData.chronoTime / 60000)
+                    + ':' + Math.floor((this.interfaceData.chronoTime % 60000) / 1000)
+                    + ':' + Math.floor((this.interfaceData.chronoTime % 60000) % 1000)
     document.getElementById("crono").textContent = output;
   }
 
   updateScore(deltaTime) {
-    this.game.gameData.playerScore += deltaTime * 0.001 * (this.game.gameData.lapNumber + 1) * this.game.gameData.level;
-    document.getElementById("score").textContent = "Score: " + Math.trunc(this.game.gameData.playerScore) + ' points';
+    this.interfaceData.playerScore += deltaTime * 0.001 * (this.game.gameData.lapNumber + 1) * this.game.gameData.level;
+    document.getElementById("score").textContent = "Score: " + Math.trunc(this.interfaceData.playerScore) + ' points';
   }
 
   update() {
@@ -244,16 +252,16 @@ class MyScene extends THREE.Scene {
 
     if (this.interfaceData.animate) {
       var now =  Date.now();
-      var deltaTime =  now - this.game.gameData.lastTime;
-      this.game.gameData.lastTime = now;
+      var deltaTime =  now - this.interfaceData.lastTime;
+      this.interfaceData.lastTime = now;
       this.game.update(deltaTime);
       this.updateStats(deltaTime);
-      if (!this.game.gameData.protected) {
+      if (!this.interfaceData.protected) {
         this.CheckCollision();
       } else {
-        this.game.gameData.lastCollision += deltaTime;
-        if (this.game.gameData.lastCollision > 3000) {
-          this.game.gameData.protected = false;
+        this.interfaceData.lastCollision += deltaTime;
+        if (this.interfaceData.lastCollision > 3000) {
+          this.interfaceData.protected = false;
           document.getElementById("protected").style.display = "none";
           document.getElementById("WebGL-output").style.filter = "";
         }
@@ -267,9 +275,9 @@ class MyScene extends THREE.Scene {
   ///////////////////////////////////////////////////////////////////////////
 
   updateStatAfterPickingBalloon() {
-    this.game.gameData.playerScore += 100 * this.game.gameData.level;
-    this.game.gameData.ballonsDeleted++;
-    document.getElementById("balloons").textContent = 'Balloons destroyed: ' + this.game.gameData.ballonsDeleted + ' / ' + this.game.gameData.nballoons;
+    this.interfaceData.playerScore += 100 * this.game.gameData.level;
+    this.interfaceData.ballonsDeleted++;
+    document.getElementById("balloons").textContent = 'Balloons destroyed: ' + this.interfaceData.ballonsDeleted + ' / ' + this.game.gameData.nballoons;
   }
 
   checkRayPicking(event) {
@@ -313,11 +321,11 @@ class MyScene extends THREE.Scene {
   }
 
   updateStatsAfterCollision() {
-    this.game.gameData.protected = true;
-    this.game.gameData.lastCollision = 0;
-    this.game.gameData.lives--;
-    document.getElementById("lives").textContent = 'Lives: ' + this.game.gameData.lives;
-    if (this.game.gameData.lives == 0) {
+    this.interfaceData.protected = true;
+    this.interfaceData.lastCollision = 0;
+    this.interfaceData.lives--;
+    document.getElementById("lives").textContent = 'Lives: ' + this.interfaceData.lives;
+    if (this.interfaceData.lives == 0) {
       this.endGame();
     } else {
       document.getElementById("protected").style.display = "block";
@@ -327,9 +335,9 @@ class MyScene extends THREE.Scene {
 
   endGame() {
     document.getElementById("menuFin").style.display = "block";
-    document.getElementById("fin-score").textContent = "Score: " + Math.trunc(this.game.gameData.playerScore);
+    document.getElementById("fin-score").textContent = "Score: " + Math.trunc(this.interfaceData.playerScore);
     document.getElementById("fin-laps").textContent = "Laps: " + this.game.gameData.lapNumber;
-    document.getElementById("fin-balloons").textContent = "Balloons deleted: " + this.game.gameData.ballonsDeleted;
+    document.getElementById("fin-balloons").textContent = "Balloons deleted: " + this.interfaceData.ballonsDeleted;
     document.getElementById("fin-time").textContent = document.getElementById("crono").textContent;
     document.getElementById("main-header").style.display = "none";
     this.interfaceData.animate = false;
