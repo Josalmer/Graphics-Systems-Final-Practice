@@ -42,24 +42,11 @@ class CrazyWagonGame extends THREE.Object3D {
     this.obstacles = this.createObstacles();
     this.add(this.obstacles);
 
-    this.balloons = this.createBalloons(mapa);
+    this.balloons = this.createBalloons();
   }
 
   createSpline(mapa) {
-
     var spline1 = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(0, 10, 10), new THREE.Vector3(30, 20, 0),
-      new THREE.Vector3(30, 25, 10), new THREE.Vector3(0, 30, 25),
-      new THREE.Vector3(-25, 10, 0), new THREE.Vector3(-20, 8, -25),
-      new THREE.Vector3(0, 30, 4), new THREE.Vector3(-10, 15, 35),
-      new THREE.Vector3(14, 40, 40), new THREE.Vector3(24, 45, 35),
-      new THREE.Vector3(-10, 27, 10),
-      new THREE.Vector3(12, 12, -15), new THREE.Vector3(-12, 20, -30),
-      new THREE.Vector3(-15, 16, 0), new THREE.Vector3(-13, 12, 13),
-      new THREE.Vector3(-7, 7, 12), new THREE.Vector3(0, 10, 10)
-    ]);
-
-    var spline2 = new THREE.CatmullRomCurve3([
       new THREE.Vector3(0, 10, 10), new THREE.Vector3(-7, 7, 12),
       new THREE.Vector3(-13, 12, 13), new THREE.Vector3(-15, 16, 0),
       new THREE.Vector3(-12, 20, -30), new THREE.Vector3(12, 12, -15),
@@ -70,7 +57,17 @@ class CrazyWagonGame extends THREE.Object3D {
       new THREE.Vector3(0, 30, 25), new THREE.Vector3(30, 25, 10),
       new THREE.Vector3(30, 20, 0), new THREE.Vector3(0, 10, 10)
     ]);
-
+    var spline2 = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, 10, 10), new THREE.Vector3(30, 20, 0),
+      new THREE.Vector3(30, 25, 10), new THREE.Vector3(0, 30, 25),
+      new THREE.Vector3(-25, 10, 0), new THREE.Vector3(-20, 8, -25),
+      new THREE.Vector3(0, 30, 4), new THREE.Vector3(-10, 15, 35),
+      new THREE.Vector3(14, 40, 40), new THREE.Vector3(24, 45, 35),
+      new THREE.Vector3(-10, 27, 10),
+      new THREE.Vector3(12, 12, -15), new THREE.Vector3(-12, 20, -30),
+      new THREE.Vector3(-15, 16, 0), new THREE.Vector3(-13, 12, 13),
+      new THREE.Vector3(-7, 7, 12), new THREE.Vector3(0, 10, 10)
+    ]);
     return mapa == 1 ? spline1 : spline2;
   }
 
@@ -107,20 +104,8 @@ class CrazyWagonGame extends THREE.Object3D {
     }
   }
 
-  createBalloons(mapa) {
-    var positions1 = [
-      new THREE.Vector3(10, 10, 15), new THREE.Vector3(-10, 15, 0),
-      new THREE.Vector3(0, 20, -10), new THREE.Vector3(-10, 25, -10),
-      new THREE.Vector3(24, 30, 10), new THREE.Vector3(-20, 35, 20),
-      new THREE.Vector3(17, 35, -20), new THREE.Vector3(-18, 35, -18),
-      new THREE.Vector3(23, 30, 20), new THREE.Vector3(-20, 25, 30),
-      new THREE.Vector3(-10, 20, -24), new THREE.Vector3(-30, 15, -30),
-      new THREE.Vector3(13, 10, 46), new THREE.Vector3(-18, 15, 40),
-      new THREE.Vector3(10, 20, -30), new THREE.Vector3(15, 25, 15),
-      new THREE.Vector3(10, 30, 34), new THREE.Vector3(-30, 35, 0),
-      new THREE.Vector3(0, 35, -35), new THREE.Vector3(-20, 35, 0)
-    ]
-    var positions2 = [
+  createBalloons() {
+    var positions = [
       new THREE.Vector3(10, 10, 15), new THREE.Vector3(-10, 15, 0),
       new THREE.Vector3(0, 20, -10), new THREE.Vector3(-10, 25, -10),
       new THREE.Vector3(24, 30, 10), new THREE.Vector3(-20, 35, 20),
@@ -133,7 +118,6 @@ class CrazyWagonGame extends THREE.Object3D {
       new THREE.Vector3(0, 35, -35), new THREE.Vector3(-20, 35, 0)
     ]
     var balloons = [];
-    var positions = mapa == 1 ? positions1 : positions2;
     for (let i = 0; i < this.gameData.nballoons; i++) {
       let radio = Math.floor(this.getRandom(0.8, 2));
       let newBalloon = this.createBalloon(radio);

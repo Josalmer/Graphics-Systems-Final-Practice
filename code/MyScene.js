@@ -9,7 +9,6 @@ class MyScene extends THREE.Scene {
     this.renderer = this.createRenderer(myCanvas);
 
     this.createLights(map);
-    console.log(map);
 
     this.createCamera();
 
@@ -60,9 +59,7 @@ class MyScene extends THREE.Scene {
 
   createLights(map) {
     var ambientLight = new THREE.AmbientLight(0xccddee, 0.35);
-
     var color = map == 1 ? 0x572364 : 0xFFFF00;
-
     this.add(ambientLight);
     this.spotLight = new THREE.SpotLight(color, 0.75);
     this.spotLight.position.set(60, 60, 40);
