@@ -1,5 +1,3 @@
-// Jose Saldaña Y Alberto Rodriguez
-
 class MyScene extends THREE.Scene {
   constructor(myCanvas, level, map) {
     super();
