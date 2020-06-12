@@ -6,6 +6,8 @@ class MyScene extends THREE.Scene {
 
     this.renderer = this.createRenderer(myCanvas);
 
+    this.initBackground(map);
+
     this.createLights(map);
 
     this.createCamera();
@@ -14,9 +16,6 @@ class MyScene extends THREE.Scene {
 
     this.game = new CrazyWagonGame(level, map);
     this.add(this.game);
-
-    this.environment = new Environment(map);
-    this.add(this.environment);
   }
 
   ///////////////////////////////////////////////////////////////////////////
@@ -82,6 +81,21 @@ class MyScene extends THREE.Scene {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
 
+  initBackground(map) {
+    var materialArray = [];
+
+    var url = map == 1 ? 'imgs/ci_' : 'imgs/barren_';
+
+    materialArray.push( url + 'ft.jpg');
+    materialArray.push( url + 'bk.jpg');
+    materialArray.push( url + 'up.jpg');
+    materialArray.push( url + 'dn.jpg');
+    materialArray.push( url + 'rt.jpg');
+    materialArray.push( url + 'lf.jpg');
+
+    var textureCube = new THREE.CubeTextureLoader().load(materialArray);
+    this.background = textureCube;
+  }
  
   ///////////////////////////////////////////////////////////////////////////
   // SOUNDS & MUSIC //
